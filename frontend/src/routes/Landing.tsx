@@ -31,13 +31,22 @@ export default function Landing() {
             </div>
 
             <div className="hidden md:flex items-center gap-6">
-              <a href="#features" className="text-zinc-400 hover:text-zinc-100 transition">
+              <a
+                href="#features"
+                className="text-zinc-400 hover:text-zinc-100 transition"
+              >
                 Features
               </a>
-              <a href="#how-it-works" className="text-zinc-400 hover:text-zinc-100 transition">
+              <a
+                href="#how-it-works"
+                className="text-zinc-400 hover:text-zinc-100 transition"
+              >
                 How it Works
               </a>
-              <a href="#community" className="text-zinc-400 hover:text-zinc-100 transition">
+              <a
+                href="#community"
+                className="text-zinc-400 hover:text-zinc-100 transition"
+              >
                 Community
               </a>
             </div>
@@ -65,13 +74,18 @@ export default function Landing() {
         {/* Animated Background */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-pulse"></div>
-          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
+          <div
+            className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse"
+            style={{ animationDelay: "1s" }}
+          ></div>
         </div>
 
         <div className="relative max-w-7xl mx-auto text-center">
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-zinc-800/50 border border-zinc-700 rounded-full mb-8">
             <Zap className="w-4 h-4 text-yellow-400" />
-            <span className="text-sm text-zinc-300">Join 10,000+ Hackers Worldwide</span>
+            <span className="text-sm text-zinc-300">
+              Join 10,000+ Hackers Worldwide
+            </span>
           </div>
 
           <h1 className="text-5xl md:text-7xl font-bold text-zinc-100 mb-6 leading-tight">
@@ -83,8 +97,9 @@ export default function Landing() {
           </h1>
 
           <p className="text-xl text-zinc-400 mb-12 max-w-3xl mx-auto">
-            The ultimate platform for cybersecurity professionals and enthusiasts to collaborate,
-            compete in CTF challenges, and share knowledge.
+            The ultimate platform for cybersecurity professionals and
+            enthusiasts to collaborate, compete in CTF challenges, and share
+            knowledge.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -207,7 +222,8 @@ export default function Landing() {
             Join Our Growing Community
           </h2>
           <p className="text-lg text-zinc-400 mb-12 max-w-2xl mx-auto">
-            Connect with thousands of cybersecurity professionals, from beginners to experts
+            Connect with thousands of cybersecurity professionals, from
+            beginners to experts
           </p>
 
           <div className="flex flex-wrap items-center justify-center gap-4 mb-12">
@@ -254,31 +270,70 @@ export default function Landing() {
             <div>
               <h3 className="font-semibold text-zinc-100 mb-4">Platform</h3>
               <div className="space-y-2">
-                <a href="#features" className="block text-sm text-zinc-500 hover:text-zinc-300">Features</a>
-                <a href="#" className="block text-sm text-zinc-500 hover:text-zinc-300">Challenges</a>
-                <a href="#" className="block text-sm text-zinc-500 hover:text-zinc-300">Leaderboard</a>
+                <a
+                  href="#features"
+                  className="block text-sm text-zinc-500 hover:text-zinc-300"
+                >
+                  Features
+                </a>
+                <a
+                  href="#"
+                  className="block text-sm text-zinc-500 hover:text-zinc-300"
+                >
+                  Challenges
+                </a>
+                <a
+                  href="#"
+                  className="block text-sm text-zinc-500 hover:text-zinc-300"
+                >
+                  Leaderboard
+                </a>
               </div>
             </div>
 
             <div>
               <h3 className="font-semibold text-zinc-100 mb-4">Resources</h3>
               <div className="space-y-2">
-                <a href="#" className="block text-sm text-zinc-500 hover:text-zinc-300">Documentation</a>
-                <a href="#" className="block text-sm text-zinc-500 hover:text-zinc-300">Blog</a>
-                <a href="#" className="block text-sm text-zinc-500 hover:text-zinc-300">Support</a>
+                <a
+                  href="#"
+                  className="block text-sm text-zinc-500 hover:text-zinc-300"
+                >
+                  Documentation
+                </a>
+                <a
+                  href="#"
+                  className="block text-sm text-zinc-500 hover:text-zinc-300"
+                >
+                  Blog
+                </a>
+                <a
+                  href="#"
+                  className="block text-sm text-zinc-500 hover:text-zinc-300"
+                >
+                  Support
+                </a>
               </div>
             </div>
 
             <div>
               <h3 className="font-semibold text-zinc-100 mb-4">Connect</h3>
               <div className="flex gap-3">
-                <a href="#" className="p-2 bg-zinc-800 hover:bg-zinc-700 rounded-lg transition">
+                <a
+                  href="#"
+                  className="p-2 bg-zinc-800 hover:bg-zinc-700 rounded-lg transition"
+                >
                   <Github className="w-5 h-5 text-zinc-400" />
                 </a>
-                <a href="#" className="p-2 bg-zinc-800 hover:bg-zinc-700 rounded-lg transition">
+                <a
+                  href="#"
+                  className="p-2 bg-zinc-800 hover:bg-zinc-700 rounded-lg transition"
+                >
                   <Twitter className="w-5 h-5 text-zinc-400" />
                 </a>
-                <a href="#" className="p-2 bg-zinc-800 hover:bg-zinc-700 rounded-lg transition">
+                <a
+                  href="#"
+                  className="p-2 bg-zinc-800 hover:bg-zinc-700 rounded-lg transition"
+                >
                   <Linkedin className="w-5 h-5 text-zinc-400" />
                 </a>
               </div>
@@ -290,9 +345,15 @@ export default function Landing() {
               © 2025 Hackers Connect. All rights reserved.
             </p>
             <div className="flex gap-6">
-              <a href="#" className="text-sm text-zinc-500 hover:text-zinc-300">Privacy</a>
-              <a href="#" className="text-sm text-zinc-500 hover:text-zinc-300">Terms</a>
-              <a href="#" className="text-sm text-zinc-500 hover:text-zinc-300">Security</a>
+              <a href="#" className="text-sm text-zinc-500 hover:text-zinc-300">
+                Privacy
+              </a>
+              <a href="#" className="text-sm text-zinc-500 hover:text-zinc-300">
+                Terms
+              </a>
+              <a href="#" className="text-sm text-zinc-500 hover:text-zinc-300">
+                Security
+              </a>
             </div>
           </div>
         </div>
@@ -301,7 +362,15 @@ export default function Landing() {
   );
 }
 
-function FeatureCard({ icon, title, description }: { icon: React.ReactNode; title: string; description: string }) {
+function FeatureCard({
+  icon,
+  title,
+  description,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  description: string;
+}) {
   return (
     <div className="p-6 bg-zinc-900 border border-zinc-800 rounded-xl hover:border-zinc-700 transition group">
       <div className="w-14 h-14 bg-gradient-to-br from-blue-500/10 to-purple-600/10 rounded-xl flex items-center justify-center text-blue-400 mb-4 group-hover:scale-110 transition">
@@ -313,7 +382,15 @@ function FeatureCard({ icon, title, description }: { icon: React.ReactNode; titl
   );
 }
 
-function StepCard({ number, title, description }: { number: string; title: string; description: string }) {
+function StepCard({
+  number,
+  title,
+  description,
+}: {
+  number: string;
+  title: string;
+  description: string;
+}) {
   return (
     <div className="text-center">
       <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl text-white font-bold text-2xl mb-6">

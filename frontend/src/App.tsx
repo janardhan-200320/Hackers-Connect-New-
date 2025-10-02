@@ -320,13 +320,13 @@ function AppContent() {
                   Quick Actions
                 </h3>
                 <div className="space-y-2">
-                  <button 
+                  <button
                     onClick={openCreatePost}
                     className="w-full px-3 py-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-100 text-sm rounded-lg transition"
                   >
                     Create Post
                   </button>
-                  <button 
+                  <button
                     onClick={openStartChallenge}
                     className="w-full px-3 py-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-100 text-sm rounded-lg transition"
                   >

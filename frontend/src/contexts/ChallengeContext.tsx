@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, ReactNode } from 'react';
+import { createContext, useContext, useState, ReactNode } from "react";
 
 interface ChallengeContextType {
   isStartChallengeOpen: boolean;
@@ -7,7 +7,9 @@ interface ChallengeContextType {
   closeStartChallenge: () => void;
 }
 
-const ChallengeContext = createContext<ChallengeContextType | undefined>(undefined);
+const ChallengeContext = createContext<ChallengeContextType | undefined>(
+  undefined
+);
 
 export function ChallengeProvider({ children }: { children: ReactNode }) {
   const [isStartChallengeOpen, setIsStartChallengeOpen] = useState(false);
@@ -32,7 +34,7 @@ export function ChallengeProvider({ children }: { children: ReactNode }) {
 export function useChallenge() {
   const context = useContext(ChallengeContext);
   if (context === undefined) {
-    throw new Error('useChallenge must be used within a ChallengeProvider');
+    throw new Error("useChallenge must be used within a ChallengeProvider");
   }
   return context;
 }

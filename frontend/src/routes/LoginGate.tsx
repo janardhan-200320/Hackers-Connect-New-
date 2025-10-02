@@ -1,5 +1,14 @@
 import { useState } from "react";
-import { Eye, EyeOff, Lock, Mail, User, Shield, Github, Terminal } from "lucide-react";
+import {
+  Eye,
+  EyeOff,
+  Lock,
+  Mail,
+  User,
+  Shield,
+  Github,
+  Terminal,
+} from "lucide-react";
 import * as Tabs from "@radix-ui/react-tabs";
 
 export default function LoginGate() {
@@ -31,12 +40,12 @@ export default function LoginGate() {
 
   const handleRegister = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (registerData.password !== registerData.confirmPassword) {
       alert("Passwords don't match!");
       return;
     }
-    
+
     console.log("Register:", registerData);
     alert("Registration functionality will be implemented!");
     // TODO: Implement actual registration logic
@@ -63,22 +72,23 @@ export default function LoginGate() {
               </h1>
             </div>
             <p className="text-lg text-zinc-400">
-              Join the elite community of cybersecurity professionals and enthusiasts
+              Join the elite community of cybersecurity professionals and
+              enthusiasts
             </p>
           </div>
 
           <div className="space-y-4">
-            <FeatureItem 
+            <FeatureItem
               icon={<Terminal className="w-5 h-5" />}
               title="CTF Challenges"
               description="Compete in capture the flag competitions"
             />
-            <FeatureItem 
+            <FeatureItem
               icon={<User className="w-5 h-5" />}
               title="Connect & Collaborate"
               description="Network with hackers worldwide"
             />
-            <FeatureItem 
+            <FeatureItem
               icon={<Shield className="w-5 h-5" />}
               title="Share Knowledge"
               description="Share exploits, writeups, and POCs"
@@ -88,7 +98,10 @@ export default function LoginGate() {
 
         {/* Right Side - Auth Forms */}
         <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-8 shadow-2xl">
-          <Tabs.Root value={activeTab} onValueChange={(v) => setActiveTab(v as "login" | "register")}>
+          <Tabs.Root
+            value={activeTab}
+            onValueChange={(v) => setActiveTab(v as "login" | "register")}
+          >
             {/* Tabs Header */}
             <Tabs.List className="flex gap-1 bg-zinc-800/50 rounded-lg p-1 mb-8">
               <Tabs.Trigger
@@ -119,7 +132,9 @@ export default function LoginGate() {
                       required
                       placeholder="your@email.com"
                       value={loginData.email}
-                      onChange={(e) => setLoginData({ ...loginData, email: e.target.value })}
+                      onChange={(e) =>
+                        setLoginData({ ...loginData, email: e.target.value })
+                      }
                       className="w-full pl-10 pr-4 py-3 bg-zinc-800 border border-zinc-700 rounded-lg text-zinc-100 placeholder-zinc-500 outline-none focus:border-zinc-600 transition"
                     />
                   </div>
@@ -136,7 +151,9 @@ export default function LoginGate() {
                       required
                       placeholder="••••••••"
                       value={loginData.password}
-                      onChange={(e) => setLoginData({ ...loginData, password: e.target.value })}
+                      onChange={(e) =>
+                        setLoginData({ ...loginData, password: e.target.value })
+                      }
                       className="w-full pl-10 pr-12 py-3 bg-zinc-800 border border-zinc-700 rounded-lg text-zinc-100 placeholder-zinc-500 outline-none focus:border-zinc-600 transition"
                     />
                     <button
@@ -144,7 +161,11 @@ export default function LoginGate() {
                       onClick={() => setShowPassword(!showPassword)}
                       className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-400"
                     >
-                      {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                      {showPassword ? (
+                        <EyeOff className="w-5 h-5" />
+                      ) : (
+                        <Eye className="w-5 h-5" />
+                      )}
                     </button>
                   </div>
                 </div>
@@ -171,7 +192,9 @@ export default function LoginGate() {
                     <div className="w-full border-t border-zinc-800"></div>
                   </div>
                   <div className="relative flex justify-center text-sm">
-                    <span className="px-4 bg-zinc-900 text-zinc-500">Or continue with</span>
+                    <span className="px-4 bg-zinc-900 text-zinc-500">
+                      Or continue with
+                    </span>
                   </div>
                 </div>
 
@@ -199,7 +222,12 @@ export default function LoginGate() {
                       required
                       placeholder="hacker123"
                       value={registerData.username}
-                      onChange={(e) => setRegisterData({ ...registerData, username: e.target.value })}
+                      onChange={(e) =>
+                        setRegisterData({
+                          ...registerData,
+                          username: e.target.value,
+                        })
+                      }
                       className="w-full pl-10 pr-4 py-3 bg-zinc-800 border border-zinc-700 rounded-lg text-zinc-100 placeholder-zinc-500 outline-none focus:border-zinc-600 transition"
                     />
                   </div>
@@ -216,7 +244,12 @@ export default function LoginGate() {
                       required
                       placeholder="John Doe"
                       value={registerData.fullName}
-                      onChange={(e) => setRegisterData({ ...registerData, fullName: e.target.value })}
+                      onChange={(e) =>
+                        setRegisterData({
+                          ...registerData,
+                          fullName: e.target.value,
+                        })
+                      }
                       className="w-full pl-10 pr-4 py-3 bg-zinc-800 border border-zinc-700 rounded-lg text-zinc-100 placeholder-zinc-500 outline-none focus:border-zinc-600 transition"
                     />
                   </div>
@@ -233,7 +266,12 @@ export default function LoginGate() {
                       required
                       placeholder="your@email.com"
                       value={registerData.email}
-                      onChange={(e) => setRegisterData({ ...registerData, email: e.target.value })}
+                      onChange={(e) =>
+                        setRegisterData({
+                          ...registerData,
+                          email: e.target.value,
+                        })
+                      }
                       className="w-full pl-10 pr-4 py-3 bg-zinc-800 border border-zinc-700 rounded-lg text-zinc-100 placeholder-zinc-500 outline-none focus:border-zinc-600 transition"
                     />
                   </div>
@@ -250,7 +288,12 @@ export default function LoginGate() {
                       required
                       placeholder="••••••••"
                       value={registerData.password}
-                      onChange={(e) => setRegisterData({ ...registerData, password: e.target.value })}
+                      onChange={(e) =>
+                        setRegisterData({
+                          ...registerData,
+                          password: e.target.value,
+                        })
+                      }
                       className="w-full pl-10 pr-12 py-3 bg-zinc-800 border border-zinc-700 rounded-lg text-zinc-100 placeholder-zinc-500 outline-none focus:border-zinc-600 transition"
                     />
                     <button
@@ -258,7 +301,11 @@ export default function LoginGate() {
                       onClick={() => setShowPassword(!showPassword)}
                       className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-400"
                     >
-                      {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                      {showPassword ? (
+                        <EyeOff className="w-5 h-5" />
+                      ) : (
+                        <Eye className="w-5 h-5" />
+                      )}
                     </button>
                   </div>
                 </div>
@@ -274,15 +321,26 @@ export default function LoginGate() {
                       required
                       placeholder="••••••••"
                       value={registerData.confirmPassword}
-                      onChange={(e) => setRegisterData({ ...registerData, confirmPassword: e.target.value })}
+                      onChange={(e) =>
+                        setRegisterData({
+                          ...registerData,
+                          confirmPassword: e.target.value,
+                        })
+                      }
                       className="w-full pl-10 pr-12 py-3 bg-zinc-800 border border-zinc-700 rounded-lg text-zinc-100 placeholder-zinc-500 outline-none focus:border-zinc-600 transition"
                     />
                     <button
                       type="button"
-                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      onClick={() =>
+                        setShowConfirmPassword(!showConfirmPassword)
+                      }
                       className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-400"
                     >
-                      {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                      {showConfirmPassword ? (
+                        <EyeOff className="w-5 h-5" />
+                      ) : (
+                        <Eye className="w-5 h-5" />
+                      )}
                     </button>
                   </div>
                 </div>
@@ -313,7 +371,9 @@ export default function LoginGate() {
                     <div className="w-full border-t border-zinc-800"></div>
                   </div>
                   <div className="relative flex justify-center text-sm">
-                    <span className="px-4 bg-zinc-900 text-zinc-500">Or continue with</span>
+                    <span className="px-4 bg-zinc-900 text-zinc-500">
+                      Or continue with
+                    </span>
                   </div>
                 </div>
 
@@ -333,12 +393,18 @@ export default function LoginGate() {
   );
 }
 
-function FeatureItem({ icon, title, description }: { icon: React.ReactNode; title: string; description: string }) {
+function FeatureItem({
+  icon,
+  title,
+  description,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  description: string;
+}) {
   return (
     <div className="flex items-start gap-3">
-      <div className="p-2 bg-zinc-800/50 rounded-lg text-blue-400">
-        {icon}
-      </div>
+      <div className="p-2 bg-zinc-800/50 rounded-lg text-blue-400">{icon}</div>
       <div>
         <h3 className="font-semibold text-zinc-200">{title}</h3>
         <p className="text-sm text-zinc-500">{description}</p>

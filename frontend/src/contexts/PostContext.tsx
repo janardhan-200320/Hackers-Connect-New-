@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, ReactNode } from 'react';
+import { createContext, useContext, useState, ReactNode } from "react";
 
 interface PostContextType {
   isCreatePostOpen: boolean;
@@ -32,7 +32,7 @@ export function PostProvider({ children }: { children: ReactNode }) {
 export function usePost() {
   const context = useContext(PostContext);
   if (context === undefined) {
-    throw new Error('usePost must be used within a PostProvider');
+    throw new Error("usePost must be used within a PostProvider");
   }
   return context;
 }

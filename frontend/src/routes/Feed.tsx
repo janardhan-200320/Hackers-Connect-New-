@@ -104,14 +104,14 @@ export default function Feed() {
           </button>
         </div>
         <div className="flex items-center gap-2 mt-3 pl-13">
-          <button 
+          <button
             onClick={() => setIsCreatePostOpen(true)}
             className="flex items-center gap-2 px-3 py-1.5 text-xs text-zinc-400 hover:text-zinc-300 hover:bg-zinc-800 rounded-lg transition"
           >
             <Code2 className="w-4 h-4" />
             Code
           </button>
-          <button 
+          <button
             onClick={() => setIsCreatePostOpen(true)}
             className="flex items-center gap-2 px-3 py-1.5 text-xs text-zinc-400 hover:text-zinc-300 hover:bg-zinc-800 rounded-lg transition"
           >
@@ -145,8 +145,12 @@ export default function Feed() {
                 </Avatar.Fallback>
               </Avatar.Root>
               <div>
-                <p className="font-medium text-zinc-100">{mockPosts[0].author.fullName}</p>
-                <p className="text-sm text-zinc-500">@{mockPosts[0].author.username}</p>
+                <p className="font-medium text-zinc-100">
+                  {mockPosts[0].author.fullName}
+                </p>
+                <p className="text-sm text-zinc-500">
+                  @{mockPosts[0].author.username}
+                </p>
               </div>
             </div>
 
@@ -179,10 +183,7 @@ export default function Feed() {
                 <label className="block text-sm font-medium text-zinc-400 mb-2">
                   Code Snippet (optional)
                 </label>
-                <CodeEditor 
-                  value={postCode} 
-                  onChange={setPostCode}
-                />
+                <CodeEditor value={postCode} onChange={setPostCode} />
               </div>
 
               {/* Action Buttons */}

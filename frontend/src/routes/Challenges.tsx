@@ -1,5 +1,14 @@
 import { useState } from "react";
-import { Trophy, Lock, Flag, Search, Filter, Award, X, Plus } from "lucide-react";
+import {
+  Trophy,
+  Lock,
+  Flag,
+  Search,
+  Filter,
+  Award,
+  X,
+  Plus,
+} from "lucide-react";
 import * as Tabs from "@radix-ui/react-tabs";
 import * as Dialog from "@radix-ui/react-dialog";
 import { mockChallenges } from "@/lib/mockData";
@@ -14,7 +23,7 @@ export default function Challenges() {
   >(null);
   const [flagInput, setFlagInput] = useState("");
   const { isStartChallengeOpen, setIsStartChallengeOpen } = useChallenge();
-  
+
   // New Challenge Form State
   const [newChallenge, setNewChallenge] = useState({
     title: "",
@@ -61,7 +70,11 @@ export default function Challenges() {
   };
 
   const handleCreateChallenge = () => {
-    if (!newChallenge.title.trim() || !newChallenge.description.trim() || !newChallenge.flag.trim()) {
+    if (
+      !newChallenge.title.trim() ||
+      !newChallenge.description.trim() ||
+      !newChallenge.flag.trim()
+    ) {
       alert("Please fill in all required fields");
       return;
     }
@@ -69,7 +82,7 @@ export default function Challenges() {
     // Mock challenge creation
     console.log("New challenge created:", newChallenge);
     alert("Challenge created successfully!");
-    
+
     // Reset form
     setNewChallenge({
       title: "",
@@ -102,7 +115,10 @@ export default function Challenges() {
       </div>
 
       {/* Start Challenge Dialog */}
-      <Dialog.Root open={isStartChallengeOpen} onOpenChange={setIsStartChallengeOpen}>
+      <Dialog.Root
+        open={isStartChallengeOpen}
+        onOpenChange={setIsStartChallengeOpen}
+      >
         <Dialog.Portal>
           <Dialog.Overlay className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 animate-in fade-in" />
           <Dialog.Content className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-zinc-900 border border-zinc-800 rounded-xl p-6 w-full max-w-2xl max-h-[85vh] overflow-y-auto z-50 shadow-2xl">
@@ -127,7 +143,9 @@ export default function Challenges() {
                   type="text"
                   placeholder="e.g., SQL Injection Challenge"
                   value={newChallenge.title}
-                  onChange={(e) => setNewChallenge({ ...newChallenge, title: e.target.value })}
+                  onChange={(e) =>
+                    setNewChallenge({ ...newChallenge, title: e.target.value })
+                  }
                   className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-2 text-zinc-100 placeholder-zinc-500 outline-none focus:border-zinc-600"
                 />
               </div>
@@ -140,7 +158,12 @@ export default function Challenges() {
                 <textarea
                   placeholder="Describe the challenge, objectives, and any hints..."
                   value={newChallenge.description}
-                  onChange={(e) => setNewChallenge({ ...newChallenge, description: e.target.value })}
+                  onChange={(e) =>
+                    setNewChallenge({
+                      ...newChallenge,
+                      description: e.target.value,
+                    })
+                  }
                   rows={4}
                   className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-2 text-zinc-100 placeholder-zinc-500 outline-none focus:border-zinc-600 resize-none"
                 />
@@ -154,7 +177,12 @@ export default function Challenges() {
                   </label>
                   <select
                     value={newChallenge.difficulty}
-                    onChange={(e) => setNewChallenge({ ...newChallenge, difficulty: e.target.value })}
+                    onChange={(e) =>
+                      setNewChallenge({
+                        ...newChallenge,
+                        difficulty: e.target.value,
+                      })
+                    }
                     className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-2 text-zinc-100 outline-none focus:border-zinc-600"
                   >
                     <option value="Easy">Easy</option>
@@ -169,7 +197,12 @@ export default function Challenges() {
                   </label>
                   <select
                     value={newChallenge.category}
-                    onChange={(e) => setNewChallenge({ ...newChallenge, category: e.target.value })}
+                    onChange={(e) =>
+                      setNewChallenge({
+                        ...newChallenge,
+                        category: e.target.value,
+                      })
+                    }
                     className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-2 text-zinc-100 outline-none focus:border-zinc-600"
                   >
                     <option value="Web">Web</option>
@@ -191,7 +224,12 @@ export default function Challenges() {
                   min="50"
                   step="50"
                   value={newChallenge.points}
-                  onChange={(e) => setNewChallenge({ ...newChallenge, points: parseInt(e.target.value) })}
+                  onChange={(e) =>
+                    setNewChallenge({
+                      ...newChallenge,
+                      points: parseInt(e.target.value),
+                    })
+                  }
                   className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-2 text-zinc-100 outline-none focus:border-zinc-600"
                 />
               </div>
@@ -205,7 +243,9 @@ export default function Challenges() {
                   type="text"
                   placeholder="FLAG{example_flag_here}"
                   value={newChallenge.flag}
-                  onChange={(e) => setNewChallenge({ ...newChallenge, flag: e.target.value })}
+                  onChange={(e) =>
+                    setNewChallenge({ ...newChallenge, flag: e.target.value })
+                  }
                   className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-2 text-zinc-100 placeholder-zinc-500 outline-none focus:border-zinc-600 font-mono"
                 />
                 <p className="text-xs text-zinc-500 mt-1">
