@@ -1,9 +1,0 @@
-
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160">
-  <rect width="160" height="160" fill="#0a0f0d"/>
-  <g fill="none" stroke="#00ff9c" stroke-width="3">
-    <path d="M20 80h120M80 20v120"/>
-    <circle cx="80" cy="80" r="50"/>
-  </g>
-  <text x="80" y="90" text-anchor="middle" font-size="18" fill="#00e0ff" font-family="monospace">ZeroDay</text>
-</svg>
