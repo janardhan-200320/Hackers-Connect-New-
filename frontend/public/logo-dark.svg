@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <style>
+    .hood { fill: #111827; }
+    .glow { fill: none; stroke: #22c55e; stroke-width: 2; }
+    .circuit { fill: none; stroke: #22c55e; stroke-width: 1.5; }
+    .eyes { fill: #22c55e; filter: url(#glow); }
+  </style>
+  <defs>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="2" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+  <path class="hood" d="M100,20 C60,20 25,60 25,100 C25,140 60,180 100,180 C140,180 175,140 175,100 C175,60 140,20 100,20 Z M100,140 C80,140 60,120 60,100 C60,80 80,60 100,60 C120,60 140,80 140,100 C140,120 120,140 100,140 Z"/>
+  <path class="circuit" d="M40,100 L60,100 M140,100 L160,100 M100,40 L100,60 M100,140 L100,160"/>
+  <path class="circuit" d="M70,70 L85,85 M115,85 L130,70 M70,130 L85,115 M115,115 L130,130"/>
+  <path class="glow" d="M60,100 C60,80 80,60 100,60 C120,60 140,80 140,100 C140,120 120,140 100,140 C80,140 60,120 60,100 Z"/>
+  <path class="eyes" d="M85,90 C88,90 90,92 90,95 C90,98 88,100 85,100 C82,100 80,98 80,95 C80,92 82,90 85,90 Z"/>
+  <path class="eyes" d="M115,90 C118,90 120,92 120,95 C120,98 118,100 115,100 C112,100 110,98 110,95 C110,92 112,90 115,90 Z"/>
+</svg>

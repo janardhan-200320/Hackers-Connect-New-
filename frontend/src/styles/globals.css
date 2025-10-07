@@ -1,13 +1,321 @@
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* Import Tailwind */
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
 
-* { @apply antialiased; }
-:root { color-scheme: dark; }
+/* Base styles */
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
 
+:root {
+  color-scheme: dark;
+}
+
+/* Effects */
 .glitch-text {
   text-shadow: 0 0 6px rgba(161,161,170,0.4), 0 0 14px rgba(113,113,122,0.3);
+}
+
+.scanline::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(transparent 49%, rgba(161,161,170,0.08) 50%, transparent 51%);
+  background-size: 100% 4px;
+  animation: scan 6s linear infinite;
+  pointer-events: none;
+}
+
+/* Utilities */
+.scrollbar-thin {
+  scrollbar-width: thin;
+}
+
+.filter-cyber {
+  filter: grayscale(50%) brightness(110%);
+}
+
+.filter-matrix {
+  filter: brightness(105%) grayscale(30%);
+}
+
+.neon-text {
+  color: #f1f5f9;
+  transition: all 0.3s ease;
+}
+
+.neon-text:hover {
+  color: var(--neon-green);
+  text-shadow: 
+    0 0 5px var(--neon-green),
+    0 0 10px var(--neon-green),
+    0 0 20px var(--neon-green);
+}
+
+.neon-border {
+  border: 1px solid rgba(34, 197, 94, 0.2);
+  transition: all 0.3s ease;
+}
+
+.neon-border:hover {
+  border-color: var(--neon-green);
+  box-shadow: 
+    0 0 5px var(--neon-green),
+    0 0 10px var(--neon-green),
+    inset 0 0 5px var(--neon-green);
+}
+
+.neon-button {
+  background-color: rgba(0, 0, 0, 0.8);
+  color: var(--neon-green);
+  border: 1px solid rgba(34, 197, 94, 0.2);
+  transition: all 0.3s ease;
+}
+
+.neon-button:hover {
+  background-color: rgba(34, 197, 94, 0.1);
+  border-color: var(--neon-green);
+  color: var(--neon-green-light);
+  box-shadow: 
+    0 0 10px var(--neon-green),
+    0 0 20px var(--neon-green);
+}
+
+.feature-card {
+  background-color: rgba(0, 0, 0, 0.8);
+  border: 1px solid rgba(34, 197, 94, 0.1);
+  transition: all 0.3s ease;
+}
+
+.feature-card:hover {
+  border-color: var(--neon-green);
+  box-shadow: 0 0 15px rgba(34, 197, 94, 0.3);
+}
+
+.neon-heading {
+  color: #f1f5f9;
+  transition: all 0.3s ease;
+  letter-spacing: 0.05em;
+}
+
+.neon-heading:hover {
+  color: var(--neon-green);
+  letter-spacing: 0.1em;
+  text-shadow: 
+    0 0 10px var(--neon-green),
+    0 0 20px var(--neon-green),
+    0 0 40px var(--neon-green);
+}
+
+.matrix-text {
+  text-shadow: 
+    0 0 5px var(--neon-green),
+    0 0 10px var(--neon-green),
+    0 0 15px var(--neon-green);
+  animation: matrixFlicker 2s infinite;
+}
+
+@keyframes matrixFlicker {
+  0%, 19.999%, 22%, 62.999%, 64%, 64.999%, 70%, 100% {
+    opacity: 1;
+  }
+  20%, 21.999%, 63%, 63.999%, 65%, 69.999% {
+    opacity: 0.4;
+  }
+}
+
+
+.neon-text {
+  color: #f8fafc;
+  transition: all 0.3s ease;
+}
+
+.neon-text:hover {
+  color: #22c55e;
+  text-shadow: 0 0 5px #22c55e,
+               0 0 10px #22c55e,
+               0 0 20px #22c55e,
+               0 0 40px #22c55e;
+}
+
+.neon-border {
+  border: 1px solid rgba(34, 197, 94, 0.2);
+  transition: all 0.3s ease;
+}
+
+.neon-border:hover {
+  border-color: #22c55e;
+  box-shadow: 0 0 5px #22c55e,
+              0 0 10px #22c55e,
+              inset 0 0 5px #22c55e,
+              inset 0 0 10px #22c55e;
+}
+
+.neon-button {
+  background: rgba(10, 10, 10, 0.8);
+  color: #22c55e;
+  border: 1px solid rgba(34, 197, 94, 0.2);
+  transition: all 0.3s ease;
+}
+
+.neon-button:hover {
+  background: rgba(34, 197, 94, 0.1);
+  border-color: #22c55e;
+  color: #86efac;
+  box-shadow: 0 0 10px #22c55e,
+              0 0 20px #22c55e;
+}
+
+.feature-card {
+  background: rgba(10, 10, 10, 0.8);
+  border: 1px solid rgba(34, 197, 94, 0.1);
+  transition: all 0.3s ease;
+}
+
+.feature-card:hover {
+  border-color: #22c55e;
+  box-shadow: 0 0 15px rgba(34, 197, 94, 0.3);
+}
+
+.neon-heading {
+  color: #f8fafc;
+  transition: all 0.3s ease;
+  letter-spacing: 0.5px;
+}
+
+.neon-heading:hover {
+  color: #22c55e;
+  text-shadow: 0 0 10px #22c55e,
+               0 0 20px #22c55e,
+               0 0 40px #22c55e;
+  letter-spacing: 1px;
+}
+
+.step-card {
+  background: rgba(10, 10, 10, 0.8);
+  border: 1px solid rgba(34, 197, 94, 0.1);
+  transition: all 0.3s ease;
+}
+
+.step-card:hover {
+  border-color: #22c55e;
+  box-shadow: 0 0 20px rgba(34, 197, 94, 0.4);
+  transform: translateY(-5px);
+}
+
+@keyframes matrixFlicker {
+  0%, 19.999%, 22%, 62.999%, 64%, 64.999%, 70%, 100% {
+    opacity: 1;
+  }
+  20%, 21.999%, 63%, 63.999%, 65%, 69.999% {
+    opacity: 0.4;
+  }
+}
+
+.matrix-text {
+  text-shadow: 0 0 5px #22c55e,
+               0 0 10px #22c55e,
+               0 0 15px #22c55e;
+  animation: matrixFlicker 2s infinite;
+}
+
+  .feature-card {
+    background: rgba(10, 10, 10, 0.8);
+    border: 1px solid rgba(34, 197, 94, 0.1);
+    transition: all 0.3s ease;
+  }
+
+  .feature-card:hover {
+    border-color: #22c55e;
+    box-shadow: 0 0 15px rgba(34, 197, 94, 0.3);
+  }
+
+  .neon-link {
+    color: #f8fafc;
+    transition: all 0.3s ease;
+    position: relative;
+  }
+
+  .neon-link:hover {
+    color: #22c55e;
+    text-shadow: 0 0 5px #22c55e,
+                 0 0 10px #22c55e;
+  }
+
+  .neon-link::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 1px;
+    bottom: -2px;
+    left: 0;
+    background-color: #22c55e;
+    box-shadow: 0 0 10px #22c55e;
+    transition: all 0.3s ease;
+  }
+
+  .neon-link:hover::after {
+    width: 100%;
+  }
+
+  .neon-heading {
+    color: #f8fafc;
+    transition: all 0.3s ease;
+    letter-spacing: 0.5px;
+  }
+
+  .neon-heading:hover {
+    color: #22c55e;
+    text-shadow: 0 0 10px #22c55e,
+                 0 0 20px #22c55e,
+                 0 0 40px #22c55e;
+    letter-spacing: 1px;
+  }
+
+  .step-card {
+    background: rgba(10, 10, 10, 0.8);
+    border: 1px solid rgba(34, 197, 94, 0.1);
+    transition: all 0.3s ease;
+  }
+
+  .step-card:hover {
+    border-color: #22c55e;
+    box-shadow: 0 0 20px rgba(34, 197, 94, 0.4);
+    transform: translateY(-5px);
+  }
+
+  .matrix-text {
+    text-shadow: 0 0 5px #22c55e,
+                 0 0 10px #22c55e,
+                 0 0 15px #22c55e;
+    animation: matrixFlicker 2s infinite;
+  }
+
+@keyframes neonPulse {
+  0%, 100% {
+    opacity: 1;
+    text-shadow: 0 0 5px #22c55e,
+                 0 0 10px #22c55e,
+                 0 0 20px #22c55e;
+  }
+  50% {
+    opacity: 0.8;
+    text-shadow: 0 0 10px #22c55e,
+                 0 0 20px #22c55e,
+                 0 0 40px #22c55e;
+  }
+}
+
+@keyframes matrixFlicker {
+  0%, 19.999%, 22%, 62.999%, 64%, 64.999%, 70%, 100% {
+    opacity: 1;
+  }
+  20%, 21.999%, 63%, 63.999%, 65%, 69.999% {
+    opacity: 0.4;
+  }
 }
 .scanline::after {
   content: '';
