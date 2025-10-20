@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CTF Challenge</title>
+  <script src="https://unpkg.com/@supabase/supabase-js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; background-color: #0d1117; color: #c9d1d9; text-align: center; padding: 40px; }
+    .challenge { background: #161b22; padding: 20px; border-radius: 10px; max-width: 600px; margin: auto; box-shadow: 0 0 10px rgba(255,255,255,0.05); }
+    h2 { color: #58a6ff; }
+    img { max-width: 100%; border-radius: 8px; margin-bottom: 15px; }
+    input { padding: 10px; width: 60%; margin: 10px 0; border-radius: 5px; border: 1px solid #30363d; background: #0d1117; color: #c9d1d9; }
+    button { padding: 10px 20px; background: #238636; color: white; border: none; border-radius: 5px; cursor: pointer; }
+    button:hover { background: #2ea043; }
+    .result { margin-top: 15px; font-weight: bold; }
+    .debug { font-size: 12px; color: #8b949e; margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <div class="challenge">
+    <h2>OSINT Challenge: Hidden in Plain Sight</h2>
+    <img src="img.png" alt="Challenge Image">
+    <p>Enter the flag you discovered:</p>
+    <input type="text" id="flagInput" placeholder="Enter flag here" />
+    <button onclick="checkFlag()">Submit</button>
+    <div class="result" id="result"></div>
+    <div class="debug" id="debugInfo"></div>
+  </div>
+
+  <script>
+    const SUPABASE_URL = "https://srzvfobfkockvrrxfjsa.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNyenZmb2Jma29ja3ZycnhmanNhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk0MjUyMTIsImV4cCI6MjA3NTAwMTIxMn0.Xa6FtGs3Bd5Tsnt8yyxyTlrgH-5eTZvZ-vsZaIwmtBI";
+    const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // SHA-256 -> hex
+    async function sha256(input) {
+      const enc = new TextEncoder();
+      const data = enc.encode(input);
+      const buf = await crypto.subtle.digest("SHA-256", data);
+      const arr = Array.from(new Uint8Array(buf));
+      return arr.map(b => b.toString(16).padStart(2, "0")).join("");
+    }
+
+    // Normalize user input into canonical form (same logic as challenge 2)
+    function normalizeToCanonical(raw) {
+      if (!raw) return "";
+      raw = raw.trim();
+
+      // If user provided braces, take inner; else use whole string
+      const m = raw.match(/\{([^}]*)\}/);
+      let inner = m ? m[1] : raw;
+
+      // Uppercase
+      inner = inner.toUpperCase();
+
+      // Replace any sequence of non-alphanumerics with single underscore
+      inner = inner.replace(/[^A-Z0-9]+/g, '_').replace(/_+/g, '_').replace(/^_|_$/g, '');
+
+      return "CTF{" + inner + "}";
+    }
+
+    async function checkFlag() {
+      const input = document.getElementById("flagInput").value || "";
+      const resultDiv = document.getElementById("result");
+      const debugDiv = document.getElementById("debugInfo");
+
+      resultDiv.textContent = "Checking...";
+      resultDiv.style.color = "#c9d1d9";
+      debugDiv.textContent = "";
+
+      const challengeName = "hidden_in_plain_sight";
+
+      // 1) Normalize using the same logic as challenge 2, then hash
+      const normalizedText = normalizeToCanonical(input);
+      const userHash = await sha256(normalizedText);
+
+      // DEBUG (temporarily) - remove or comment out these logs in production
+      console.debug("originalInput:", input);
+      console.debug("normalizedText:", normalizedText);
+      console.debug("userHash:", userHash);
+
+      // 2) Fetch stored hash from flags table (should be hash of the NORMALIZED flag)
+      const { data: flagData, error: flagError } = await client
+        .from("flags")
+        .select("correct_flag")
+        .eq("challenge_name", challengeName)
+        .single();
+
+      if (flagError) {
+        resultDiv.textContent = "❌ Error checking flag.";
+        resultDiv.style.color = "red";
+        debugDiv.textContent = flagError.message || JSON.stringify(flagError);
+        return;
+      }
+      if (!flagData) {
+        resultDiv.textContent = "❌ Challenge not found.";
+        resultDiv.style.color = "red";
+        return;
+      }
+
+      const storedHash = flagData.correct_flag;
+      console.debug("storedHash:", storedHash);
+
+      const isCorrect = userHash === storedHash;
+
+      // 3) Log attempt
+      const { error: insertError } = await client
+        .from("submissions")
+        .insert([
+          {
+            challenge_name: challengeName,
+            normalized_flag: userHash, // store the hashed normalized input
+            is_correct: isCorrect
+          }
+        ]);
+
+      if (insertError) {
+        debugDiv.textContent = "Insert error: " + insertError.message;
+      }
+
+      // 4) Show result
+      if (isCorrect) {
+        resultDiv.textContent = "✅ Correct! You solved the challenge!";
+        resultDiv.style.color = "lime";
+      } else {
+        resultDiv.textContent = "❌ Wrong flag, try again.";
+        resultDiv.style.color = "red";
+      }
+    }
+
+    // Allow Enter to submit
+    document.getElementById('flagInput').addEventListener('keydown', function(e){
+      if (e.key === 'Enter') checkFlag();
+    });
+  </script>
+</body>
+</html>

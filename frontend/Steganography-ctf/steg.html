@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Steganography CTF Challenge</title>
+    <!-- Supabase Client -->
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+            color: #00ff41;
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        .matrix-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            opacity: 0.1;
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { text-shadow: 0 0 10px #00ff41; }
+            to { text-shadow: 0 0 20px #00ff41, 0 0 30px #00ff41; }
+        }
+
+        h1 {
+            font-size: 3em;
+            color: #00ff41;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        .subtitle {
+            font-size: 1.2em;
+            color: #ffaa00;
+            margin-bottom: 20px;
+        }
+
+        .challenge-card {
+            background: rgba(0, 20, 40, 0.9);
+            border: 2px solid #00ff41;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 255, 65, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .challenge-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 255, 65, 0.3);
+        }
+
+        .challenge-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 65, 0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .challenge-card:hover::before {
+            left: 100%;
+        }
+
+        .challenge-title {
+            font-size: 1.8em;
+            color: #ffaa00;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .challenge-icon {
+            font-size: 1.2em;
+        }
+
+        .challenge-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            align-items: center;
+        }
+
+        @media (max-width: 768px) {
+            .challenge-content {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+        }
+
+        .media-container {
+            position: relative;
+            border: 3px solid #00ff41;
+            border-radius: 10px;
+            overflow: hidden;
+            background: #000;
+        }
+
+        .ctf-image, .ctf-video {
+            width: 100%;
+            height: auto;
+            display: block;
+            filter: contrast(1.1) brightness(1.1);
+            transition: all 0.3s ease;
+        }
+
+        .ctf-image:hover, .ctf-video:hover {
+            filter: contrast(1.3) brightness(1.3) hue-rotate(10deg);
+        }
+
+        .hint-box {
+            background: rgba(255, 170, 0, 0.1);
+            border-left: 4px solid #ffaa00;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+
+        .hint-title {
+            color: #ffaa00;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .tools-section {
+            margin-top: 20px;
+        }
+
+        .tool-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .tool-btn {
+            padding: 8px 16px;
+            background: rgba(0, 255, 65, 0.2);
+            border: 1px solid #00ff41;
+            color: #00ff41;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+        }
+
+        .tool-btn:hover {
+            background: rgba(0, 255, 65, 0.4);
+            transform: scale(1.05);
+        }
+
+        .flag-input-section {
+            background: rgba(255, 0, 0, 0.1);
+            border: 2px solid #ff0066;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            animation: pulse-border 3s ease-in-out infinite;
+        }
+
+        @keyframes pulse-border {
+            0%, 100% { border-color: #ff0066; }
+            50% { border-color: #ff6600; }
+        }
+
+        .final-title {
+            font-size: 2em;
+            color: #ff0066;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+        .flag-input {
+            width: 100%;
+            max-width: 400px;
+            padding: 15px;
+            font-size: 1.1em;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #00ff41;
+            border-radius: 8px;
+            color: #00ff41;
+            text-align: center;
+            font-family: 'Courier New', monospace;
+            margin-bottom: 20px;
+        }
+
+        .flag-input:focus {
+            outline: none;
+            border-color: #ffaa00;
+            box-shadow: 0 0 15px rgba(255, 170, 0, 0.5);
+        }
+
+        .submit-btn {
+            padding: 15px 30px;
+            font-size: 1.2em;
+            background: linear-gradient(45deg, #ff0066, #ff6600);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(255, 0, 102, 0.4);
+        }
+
+        .message {
+            margin-top: 20px;
+            font-size: 1.2em;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .success {
+            color: #00ff41;
+            animation: success-pulse 1s ease-in-out;
+        }
+
+        .error {
+            color: #ff0066;
+            animation: shake 0.5s ease-in-out;
+        }
+
+        @keyframes success-pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .decoded-flag {
+            background: rgba(0, 255, 65, 0.2);
+            border: 1px solid #00ff41;
+            border-radius: 5px;
+            padding: 10px;
+            margin-top: 10px;
+            font-family: 'Courier New', monospace;
+            word-break: break-all;
+        }
+
+        .challenge-solved {
+            opacity: 0.7;
+            border-color: #00ff41;
+            background: rgba(0, 255, 65, 0.1);
+        }
+
+        .binary-rain {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            opacity: 0.05;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔐 Steganography CTF</h1>
+            <p class="subtitle">Hidden in Plain Sight Challenge</p>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+
+        <!-- Challenge 1: Image Steganography -->
+        <div class="challenge-card" id="challenge1">
+            <h2 class="challenge-title">
+                <span class="challenge-icon">🖼️</span>
+                Challenge 1: Image Steganography
+            </h2>
+            <div class="challenge-content">
+                <div>
+                    <p>A seemingly innocent image hides the first half of the flag. Use steganography techniques to reveal the hidden message.</p>
+                    
+                    <div class="hint-box">
+                        <div class="hint-title">💡 Hints:</div>
+                        <ul>
+                            <li>Try examining the LSB (Least Significant Bits)</li>
+                            <li>Binary nub to text</li>
+                            <li>Consider tools like steghide or Steganography online steg analyzers</li>
+                        </ul>
+                    </div>
+
+                    <div class="tools-section">
+                        <p><strong>Suggested Tools:</strong></p>
+                        <div class="tool-buttons">
+                            <button class="tool-btn" onclick="simulateImageAnalysis()">Analyze Image</button>
+                            <button class="tool-btn" onclick="extractLSB()">Extract LSB</button>
+                        </div>
+                        <div id="imageResult" class="decoded-flag" style="display:none;"></div>
+                    </div>
+                </div>
+
+                <div class="media-container">
+                    <img src="moneyheist.png" alt="Money Heist Stego Image" class="ctf-image">
+                    <div style="text-align: center; padding: 15px;">
+                        <a href="moneyheist.png" download class="tool-btn">⬇ Download Image</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Challenge 2: Video Steganography -->
+        <div class="challenge-card" id="challenge2">
+            <h2 class="challenge-title">
+                <span class="challenge-icon">🎥</span>
+                Challenge 2: Video Steganography
+            </h2>
+            <div class="challenge-content">
+                <div>
+                    <p>The second half of the flag is hidden within this video file. Frame analysis and audio steganography might be your key to success.</p>
+                    
+                    <div class="hint-box">
+                        <div class="hint-title">💡 Hints:</div>
+                        <ul>
+                            <li>Extract individual frames from the video</li>
+                            <li>Check for hidden data in audio tracks</li>
+                            <li>Look for subtle changes between frames</li>
+                        </ul>
+                    </div>
+
+                    <div class="tools-section">
+                        <p><strong>Suggested Tools:</strong></p>
+                        <div class="tool-buttons">
+                            <button class="tool-btn" onclick="extractFrames()">Extract Frames</button>
+                            <button class="tool-btn" onclick="analyzeAudio()">Analyze Audio</button>
+                            <button class="tool-btn" onclick="checkVideoMetadata()">Video Metadata</button>
+                        </div>
+                        <div id="videoResult" class="decoded-flag" style="display:none;"></div>
+                </div>
+            </div>
+            <div class="media-container">
+                <video class="ctf-video" controls>
+                    <source src="videoo.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+                <div style="text-align: center; padding: 15px;">
+                    <a href="videoo.mp4" download class="tool-btn">⬇ Download Video</a>
+                </div>
+            </div>
+        </div>        <!-- Final Flag Submission -->
+        <div class="flag-input-section">
+            <h2>🚩 Submit Your Final Flag</h2>
+            <input type="text" class="flag-input" id="flagInput" placeholder="Enter your flag here">
+            <br>
+            <button class="submit-btn" onclick="checkFlag()">Submit</button>
+            <p id="resultMessage"></p>
+        </div>
+    </div>
+
+    <script>
+        // === Supabase Setup ===
+        const SUPABASE_URL = "https://srzvfobfkockvrrxfjsa.supabase.co";
+        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNyenZmb2Jma29ja3ZycnhmanNhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk0MjUyMTIsImV4cCI6MjA3NTAwMTIxMn0.Xa6FtGs3Bd5Tsnt8yyxyTlrgH-5eTZvZ-vsZaIwmtBI";
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // SHA-256 hash function (from sample.html)
+        async function sha256(input) {
+            const enc = new TextEncoder();
+            const data = enc.encode(input);
+            const buf = await crypto.subtle.digest("SHA-256", data);
+            const arr = Array.from(new Uint8Array(buf));
+            return arr.map(b => b.toString(16).padStart(2, "0")).join("");
+        }
+
+        // Normalize user input into canonical form (from sample.html)
+        function normalizeToCanonical(raw) {
+            if (!raw) return "";
+            raw = raw.trim();
+
+            // If user provided braces, take inner; else use whole string
+            const m = raw.match(/\{([^}]*)\}/);
+            let inner = m ? m[1] : raw;
+
+            // Uppercase
+            inner = inner.toUpperCase();
+
+            // Replace any sequence of non-alphanumerics with single underscore
+            inner = inner.replace(/[^A-Z0-9]+/g, '').replace(/^_|_$/g, '');
+
+            return "CTF{" + inner + "}";
+        }
+
+        // Enhanced flag checking with normalization, hashing, and database validation
+        async function checkFlag() {
+            const input = document.getElementById("flagInput").value || "";
+            const message = document.getElementById("resultMessage");
+            
+            // Show checking status
+            message.textContent = "Checking...";
+            message.style.color = "#ffaa00";
+            
+            const challengeName = "steganography_challenge";
+            
+            try {
+                // 1) Normalize the input
+                const normalizedInput = normalizeToCanonical(input);
+                const inputHash = await sha256(normalizedInput);
+                
+                // Enhanced debug info
+                console.log("=== FLAG VALIDATION DEBUG ===");
+                console.log("Original input:", input);
+                console.log("Input characters:", Array.from(input).map(c => `${c}(${c.charCodeAt(0)})`).join(' '));
+                console.log("Normalized input:", normalizedInput);
+                console.log("Normalized characters:", Array.from(normalizedInput).map(c => `${c}(${c.charCodeAt(0)})`).join(' '));
+                console.log("Generated hash:", inputHash);
+                console.log("Challenge name:", challengeName);
+                
+                // 2) Fetch stored hash from flags table
+                const { data: flagData, error: flagError } = await supabase
+                    .from("flags")
+                    .select("correct_flag")
+                    .eq("challenge_name", challengeName)
+                    .single();
+
+                if (flagError) {
+                    message.textContent = "❌ Error checking flag.";
+                    message.className = "message error";
+                    console.error("Flag fetch error:", flagError);
+                    return;
+                }
+                
+                if (!flagData) {
+                    message.textContent = "❌ Challenge not found.";
+                    message.className = "message error";
+                    return;
+                }
+
+                const storedHash = flagData.correct_flag;
+                console.log("Stored hash from database:", storedHash);
+                console.log("Hash comparison:");
+                console.log("  Generated:", inputHash);
+                console.log("  Stored:   ", storedHash);
+                console.log("  Match:    ", inputHash === storedHash);
+
+                const isCorrect = inputHash === storedHash;
+
+                // 3) Log attempt to submissions table
+                const { error: insertError } = await supabase
+                    .from("submissions")
+                    .insert([
+                        {
+                            challenge_name: challengeName,
+                            normalized_flag: inputHash, // store the hashed normalized input
+                            is_correct: isCorrect
+                        }
+                    ]);
+
+                if (insertError) {
+                    console.error("Insert error:", insertError);
+                }
+
+                // 4) Show result
+                if (isCorrect) {
+                    message.textContent = "✅ Correct! Challenge Solved.";
+                    message.className = "message success";
+                } else {
+                    message.textContent = "❌ Wrong flag, try again!";
+                    message.className = "message error";
+                }
+                
+            } catch (error) {
+                console.error("Error during flag validation:", error);
+                message.textContent = "❌ Error occurred during validation.";
+                message.className = "message error";
+            }
+        }
+
+        // Placeholder functions for steganography tools
+        function simulateImageAnalysis() {
+            const result = document.getElementById("imageResult");
+            result.style.display = "block";
+            result.innerHTML = "🔍 Image analysis simulation - Look for hidden patterns in the image file...";
+        }
+
+        function extractLSB() {
+            const result = document.getElementById("imageResult");
+            result.style.display = "block";
+            result.innerHTML = "🔬 LSB extraction simulation - Check the least significant bits of pixel values...";
+        }
+
+        function checkMetadata() {
+            const result = document.getElementById("imageResult");
+            result.style.display = "block";
+            result.innerHTML = "📋 Metadata analysis simulation - Examine EXIF data and file properties...";
+        }
+
+        function extractFrames() {
+            const result = document.getElementById("videoResult");
+            result.style.display = "block";
+            result.innerHTML = "🎬 Frame extraction simulation - Analyze individual video frames for hidden data...";
+        }
+
+        function analyzeAudio() {
+            const result = document.getElementById("videoResult");
+            result.style.display = "block";
+            result.innerHTML = "🔊 Audio analysis simulation - Check audio channels for steganographic content...";
+        }
+
+        function checkVideoMetadata() {
+            const result = document.getElementById("videoResult");
+            result.style.display = "block";
+            result.innerHTML = "📹 Video metadata simulation - Examine video file properties and headers...";
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Decode & Discover — Fixed</title>
+  <script src="https://unpkg.com/@supabase/supabase-js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; background:#0f172a; color:#fff; text-align:center; padding:24px; }
+    .challenge { background:#1e293b; border-radius:12px; padding:20px; max-width:720px; margin:auto; box-shadow:0 8px 30px rgba(0,0,0,0.6); }
+    pre { background:#071226; padding:12px; border-radius:8px; overflow:auto; }
+    input[type="text"]{ padding:10px; border-radius:8px; border:none; width:68%; font-size:15px }
+    button{ padding:10px 14px; border-radius:8px; border:none; background:#38bdf8; cursor:pointer; font-weight:700; margin-left:8px}
+    .result{ margin-top:14px; font-weight:700; }
+    .hint{ color:#cbd5e1; font-size:13px; margin-top:8px; }
+    .debug { font-size: 12px; color: #8b949e; margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <div class="challenge">
+    <h1>🕵️ Decode & Discover</h1>
+    <p>Decode the hex, visit the location, and submit the flag.</p>
+
+    <pre>68747470733a2f2f6d6170732e6170702e676f6f2e676c2f6d526270664d61703774614339726238360a</pre>
+    <p class="hint"><strong>Hint:</strong> Hex → ASCII (gives a URL). Visit the URL to identify the place.</p>
+
+    <p><b>Flag format:</b> <code>CTF{PLACE_NAME}</code></p>
+    <div>
+      <input id="flagInput" placeholder="Enter flag">
+      <button onclick="checkFlag()">Submit</button>
+    </div>
+    <div class="result" id="result"></div>
+    <div class="debug" id="debugInfo"></div>
+  </div>
+
+  <script>
+    const SUPABASE_URL = "https://srzvfobfkockvrrxfjsa.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNyenZmb2Jma29ja3ZycnhmanNhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk0MjUyMTIsImV4cCI6MjA3NTAwMTIxMn0.Xa6FtGs3Bd5Tsnt8yyxyTlrgH-5eTZvZ-vsZaIwmtBI";
+    const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+
+    // SHA-256 -> hex
+    async function sha256(input) {
+      const enc = new TextEncoder();
+      const data = enc.encode(input);
+      const buf = await crypto.subtle.digest("SHA-256", data);
+      const arr = Array.from(new Uint8Array(buf));
+      return arr.map(b => b.toString(16).padStart(2, "0")).join("");
+    }
+
+    // Normalize user input into canonical form: CTF{UPPER_ALNUM_WITH_UNDERSCORES}
+    function normalizeToCanonical(raw) {
+      if (!raw) return "";
+      raw = raw.trim();
+
+      // If user provided braces, take inner; else use whole string
+      const m = raw.match(/\{([^}]*)\}/);
+      let inner = m ? m[1] : raw;
+
+      // Uppercase
+      inner = inner.toUpperCase();
+
+      // Replace any sequence of non-alphanumerics with single underscore
+      inner = inner.replace(/[^A-Z0-9]+/g, '_').replace(/_+/g, '_').replace(/^_|_$/g, '');
+
+      return "CTF{" + inner + "}";
+    }
+
+    async function checkFlag() {
+      const input = document.getElementById("flagInput").value || "";
+      const resultDiv = document.getElementById("result");
+      const debugDiv = document.getElementById("debugInfo");
+
+      resultDiv.textContent = "Checking...";
+      resultDiv.style.color = "#fff";
+  debugDiv.textContent = "";
+
+      const challengeName = "decode_and_discover";
+
+      // 1) Normalize, then hash the normalized form
+      const normalizedText = normalizeToCanonical(input);
+      const userHash = await sha256(normalizedText);
+
+      // DEBUG (temporarily) - remove or comment out these logs in production
+      console.debug("originalInput:", input);
+      console.debug("normalizedText:", normalizedText);
+      console.debug("userHash:", userHash);
+
+      // 2) Fetch stored hash from flags table
+      const { data: flagData, error: flagError } = await client
+        .from("flags")
+        .select("correct_flag")
+        .eq("challenge_name", challengeName)
+        .single();
+
+      if (flagError) {
+        resultDiv.textContent = "❌ Error checking flag.";
+        resultDiv.style.color = "salmon";
+        debugDiv.textContent = flagError.message || JSON.stringify(flagError);
+        return;
+      }
+      if (!flagData) {
+        resultDiv.textContent = "❌ Challenge not found.";
+        resultDiv.style.color = "salmon";
+        return;
+      }
+
+      const storedHash = flagData.correct_flag;
+      console.debug("storedHash:", storedHash);
+
+      const isCorrect = userHash === storedHash;
+
+      // 3) Log attempt
+      const { error: insertError } = await client
+        .from("submissions")
+        .insert([
+          {
+            challenge_name: challengeName,
+            normalized_flag: userHash, // store the hashed normalized input
+            is_correct: isCorrect
+          }
+        ]);
+
+      if (insertError) {
+        debugDiv.textContent = "Insert error: " + insertError.message;
+      }
+
+      // 4) Show result
+      if (isCorrect) {
+        resultDiv.textContent = "✅ Correct! You solved the challenge!";
+        resultDiv.style.color = "lightgreen";
+      } else {
+        resultDiv.textContent = "❌ Wrong flag — try again.";
+        resultDiv.style.color = "salmon";
+      }
+    }
+
+    // Allow Enter to submit
+    document.getElementById('flagInput').addEventListener('keydown', function(e){
+      if (e.key === 'Enter') checkFlag();
+    });
+  </script>
+</body>
+</html>

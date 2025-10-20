@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Crypto CTF — Classic Ciphers (Caesar)</title>
+  <style>
+    :root{--bg:#0f172a;--card:#0b1220;--accent:#06b6d4;--muted:#94a3b8;}
+    body{font-family:Inter,ui-sans-serif,system-ui,Segoe UI,Roboto,"Helvetica Neue",Arial; background:linear-gradient(180deg,#071027 0%,#081028 100%);color:#e6eef8;margin:0;padding:28px}
+    .wrap{max-width:900px;margin:0 auto}
+    header{display:flex;align-items:center;gap:16px;margin-bottom:18px}
+    h1{margin:0;font-size:20px}
+    p.lead{margin:4px 0 18px;color:var(--muted)}
+    .card{background:var(--card);border-radius:12px;padding:18px;box-shadow:0 6px 20px rgba(2,6,23,.6)}
+    pre.cipher{background:#071226;padding:14px;border-radius:8px;font-size:16px;overflow:auto}
+    .controls{display:flex;gap:12px;flex-wrap:wrap;margin-top:12px}
+    label{display:flex;flex-direction:column;font-size:13px;color:var(--muted)}
+    input[type=number]{width:100px;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,.06);background:transparent;color:inherit}
+    button{background:var(--accent);border:none;padding:8px 12px;border-radius:10px;color:#042027;font-weight:700;cursor:pointer}
+    button.secondary{background:transparent;border:1px solid rgba(255,255,255,.06);color:var(--muted);font-weight:600}
+    .output{margin-top:16px;padding:12px;border-radius:8px;background:#051226;border:1px solid rgba(255,255,255,.03);font-family:monospace}
+    footer{margin-top:18px;color:var(--muted);font-size:13px}
+    .hint{color:var(--muted);font-size:13px;margin-top:8px}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>Crypto CTF — Classic Ciphers (Caesar)</h1>
+      <p class="lead">An interactive Caesar-cipher challenge. An encrypted message below contains the flag in the form <code>CTF{...}</code>. Pick a shift (1–25) to decrypt.</p>
+    </div>
+  </header>
+
+  <section class="card">
+    <h3>Encrypted message (ciphertext)</h3>
+    <pre class="cipher" id="cipher">Aol zljyla mshn pz JAM{JHLZHY_THZALY}</pre>
+
+    <div class="controls">
+      <label>
+        Pick shift (1–25)
+        <input id="shift" type="number" min="1" max="25" value="1" />
+      </label>
+      <button id="decryptBtn">Decrypt</button>
+      <button class="secondary" id="copyBtn">Copy ciphertext</button>
+    </div>
+
+    <div class="output" id="output">Decrypted output will appear here after you pick a shift and click <strong>Decrypt</strong>.</div>
+
+    <div class="hint">Hint: Caesar shifts letters only (A–Z / a–z). The flag uses standard uppercase within curly braces (e.g. <code>CTF{...}</code>).</div>
+
+    <footer>
+      <p>Challenge idea: pick a shift from 1 to 25 to try to reveal the flag.</p>
+    </footer>
+  </section>
+
+  <!-- Flag Submission Section -->
+  <section class="card" style="margin-top: 20px;">
+    <h3>🚩 Submit Your Flag</h3>
+    <p style="color: var(--muted); margin-bottom: 16px;">Found the flag? Enter it below to complete the challenge:</p>
+    
+    <div class="controls">
+      <label style="flex: 1;">
+        Enter the flag (format: CTF{...})
+        <input id="flagInput" type="text" placeholder="CTF{...}" style="width: 100%; margin-top: 4px;" />
+      </label>
+      <button id="submitBtn" style="align-self: flex-end;">Submit Flag</button>
+    </div>
+
+    <div class="output" id="flagResult" style="display: none;">Flag result will appear here.</div>
+  </section>
+</div>
+
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script>
+  // Supabase configuration
+    const SUPABASE_URL = "https://srzvfobfkockvrrxfjsa.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNyenZmb2Jma29ja3ZycnhmanNhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk0MjUyMTIsImV4cCI6MjA3NTAwMTIxMn0.Xa6FtGs3Bd5Tsnt8yyxyTlrgH-5eTZvZ-vsZaIwmtBI";
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  // Normalize user input into canonical form
+  function normalizeToCanonical(raw) {
+    if (!raw) return "";
+    raw = raw.trim();
+
+    // If user provided braces, take inner; else use whole string
+    const m = raw.match(/\{([^}]*)\}/);
+    let inner = m ? m[1] : raw;
+
+    // Uppercase
+    inner = inner.toUpperCase();
+
+    // Replace any sequence of non-alphanumerics with single underscore
+    inner = inner.replace(/[^A-Z0-9]+/g, '').replace(/^_|_$/g, '');
+
+    return "CTF{" + inner + "}";
+  }
+
+  // SHA-256 hash function
+  async function sha256(message) {
+    const msgBuffer = new TextEncoder().encode(message);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    return hashHex;
+  }
+  function caesarDecrypt(text, shift) {
+    const aCode = 'a'.charCodeAt(0), ACode = 'A'.charCodeAt(0);
+    return text.split('').map(ch => {
+      if (ch >= 'a' && ch <= 'z') {
+        const code = ch.charCodeAt(0) - aCode;
+        return String.fromCharCode(((code - shift + 26) % 26) + aCode);
+      }
+      if (ch >= 'A' && ch <= 'Z') {
+        const code = ch.charCodeAt(0) - ACode;
+        return String.fromCharCode(((code - shift + 26) % 26) + ACode);
+      }
+      return ch;
+    }).join('');
+  }
+
+  const cipherEl = document.getElementById('cipher');
+  const outputEl = document.getElementById('output');
+  const shiftEl = document.getElementById('shift');
+  const decryptBtn = document.getElementById('decryptBtn');
+  const copyBtn = document.getElementById('copyBtn');
+  const flagInput = document.getElementById('flagInput');
+  const submitBtn = document.getElementById('submitBtn');
+  const flagResult = document.getElementById('flagResult');
+
+  // Enhanced flag checking with normalization, hashing, and database validation
+  async function checkFlag() {
+    const input = document.getElementById("flagInput").value || "";
+    const message = document.getElementById("flagResult");
+    
+    console.log('Original flag input:', input);
+    
+    if (!input.trim()) {
+      message.textContent = 'Please enter a flag.';
+      message.style.display = 'block';
+      message.style.background = '#664d03';
+      message.style.color = '#ffecb5';
+      message.style.border = '1px solid #ffc107';
+      return;
+    }
+
+    try {
+      // Normalize the flag
+      const normalizedFlag = normalizeToCanonical(input);
+      console.log('Normalized flag:', normalizedFlag);
+      
+      // Hash the normalized flag
+      const hashedFlag = await sha256(normalizedFlag);
+      console.log('Hashed flag:', hashedFlag);
+      
+      // Check in database
+      const { data: flagData, error: flagError } = await supabase
+        .from('flags')
+        .select('correct_flag')
+        .eq('challenge_name', 'caesar_challenge')
+        .single();
+
+      if (flagError) {
+        console.error('Database error:', flagError);
+        message.textContent = 'Database error occurred.';
+        message.style.display = 'block';
+        message.style.background = '#58151c';
+        message.style.color = '#f8d7da';
+        message.style.border = '1px solid #dc3545';
+        return;
+      }
+
+      console.log('Database hash:', flagData.correct_flag);
+      const isCorrect = hashedFlag === flagData.correct_flag;
+      console.log('Hash match:', isCorrect);
+
+      // Store submission
+      const { error: submissionError } = await supabase
+        .from('submissions')
+        .insert([
+          {
+            challenge_name: 'caesar_challenge',
+            normalized_flag: normalizedFlag,
+            is_correct: isCorrect
+          }
+        ]);
+
+      if (submissionError) {
+        console.error('Submission error:', submissionError);
+      }
+
+      message.style.display = 'block';
+      if (isCorrect) {
+        message.textContent = '🎉 Correct! You successfully solved the Caesar cipher challenge!';
+        message.style.background = '#0f5132';
+        message.style.color = '#d1e7dd';
+        message.style.border = '1px solid #198754';
+      } else {
+        message.textContent = '❌ Incorrect flag. Try decrypting the message with different shifts.';
+        message.style.background = '#58151c';
+        message.style.color = '#f8d7da';
+        message.style.border = '1px solid #dc3545';
+      }
+
+    } catch (error) {
+      console.error('Error checking flag:', error);
+      message.textContent = 'An error occurred. Please try again.';
+      message.style.display = 'block';
+      message.style.background = '#58151c';
+      message.style.color = '#f8d7da';
+      message.style.border = '1px solid #dc3545';
+    }
+  }
+
+  decryptBtn.addEventListener('click', ()=>{
+    let s = Number(shiftEl.value);
+    if (!Number.isInteger(s) || s < 1 || s > 25) {
+      outputEl.textContent = 'Please enter an integer shift between 1 and 25.';
+      return;
+    }
+    const ct = cipherEl.textContent.trim();
+    const pt = caesarDecrypt(ct, s);
+    outputEl.textContent = `Shift ${s} → ${pt}`;
+  });
+
+  copyBtn.addEventListener('click', async ()=>{
+    try{
+      await navigator.clipboard.writeText(cipherEl.textContent);
+      outputEl.textContent = 'Ciphertext copied to clipboard.';
+    }catch(e){
+      outputEl.textContent = 'Copy failed — you can still highlight and copy manually.';
+    }
+  });
+
+  // Flag submission functionality
+  submitBtn.addEventListener('click', checkFlag);
+
+  // Allow Enter key to submit flag
+  flagInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      checkFlag();
+    }
+  });
+</script>
+</body>
+</html>
