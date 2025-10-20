@@ -59,15 +59,9 @@ export default function Landing() {
             <div className="flex items-center gap-3">
               <Link
                 to="/auth"
-                className="px-4 py-2 text-sm text-zinc-300 hover:text-zinc-100 transition"
+                className="px-4 py-2 text-sm rounded-md neon-button neon-text"
               >
-                Login
-              </Link>
-              <Link
-                to="/auth"
-                className="px-4 py-2 text-sm rounded-lg font-medium neon-button"
-              >
-                Access System
+                Login / Register
               </Link>
             </div>
           </div>
@@ -86,13 +80,6 @@ export default function Landing() {
         </div>
 
         <div className="relative max-w-7xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-zinc-800/50 border border-zinc-700 rounded-full mb-8">
-            <Zap className="w-4 h-4 text-green-400" />
-            <span className="text-sm text-zinc-300">
-              Access Granted: 10,000+ Elite Hackers
-            </span>
-          </div>
-
           <h1 className="text-5xl md:text-7xl font-bold text-zinc-100 mb-6 leading-tight neon-text neon-glow">
             Connect. Compete.
             <br />
@@ -245,120 +232,118 @@ export default function Landing() {
               <span className="text-sm text-zinc-500 ml-2 neon-text">Active Members</span>
             </div>
           </div>
-
-          <Link
-            to="/auth"
-            className="inline-flex items-center gap-2 px-8 py-4 rounded-xl font-semibold text-lg neon-button"
-          >
-            Gain Root Access - Zero Cost
-            <ArrowRight className="w-5 h-5" />
-          </Link>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-zinc-800 py-12 px-4">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid md:grid-cols-4 gap-8 mb-8">
-            <div>
-              <div className="flex items-center gap-2 mb-4">
-                <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-                  <Shield className="w-5 h-5 text-white" />
+      {/* Spotlight footer with torch light effect */}
+      <footer className="relative border-t border-zinc-800">
+        {/* Spotlight torch light effect - HACKERS CONNECT */}
+        <div 
+          className="spotlight-container"
+          onMouseMove={(e) => {
+            const rect = e.currentTarget.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            e.currentTarget.style.setProperty('--cursor-x', `${x}px`);
+            e.currentTarget.style.setProperty('--cursor-y', `${y}px`);
+          }}
+          onMouseLeave={(e) => {
+            // Move light off-screen when cursor leaves
+            e.currentTarget.style.setProperty('--cursor-x', '-200px');
+            e.currentTarget.style.setProperty('--cursor-y', '-200px');
+          }}
+          onMouseEnter={(e) => {
+            // Initialize position when cursor enters
+            const rect = e.currentTarget.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            e.currentTarget.style.setProperty('--cursor-x', `${x}px`);
+            e.currentTarget.style.setProperty('--cursor-y', `${y}px`);
+          }}
+        >
+          <div className="spotlight-overlay"></div>
+          <div className="spotlight-glow"></div>
+          <div className="spotlight-text">HACKERS CONNECT</div>
+        </div>
+
+        {/* Regular footer content */}
+        <div className="relative z-10 bg-zinc-900/80 py-16 px-4">
+          <div className="max-w-7xl mx-auto">
+            <div className="grid md:grid-cols-4 gap-8 mb-8">
+              <div>
+                <div className="flex items-center gap-2 mb-4">
+                  <div className="w-8 h-8 bg-gradient-to-br from-green-500 to-emerald-500 rounded-lg flex items-center justify-center">
+                    <Shield className="w-5 h-5 text-white" />
+                  </div>
+                  <span className="font-bold text-zinc-100">Hackers Connect</span>
                 </div>
-                <span className="font-bold text-zinc-100">Hackers Connect</span>
+                <p className="text-sm text-zinc-500">
+                  The ultimate platform for cybersecurity professionals
+                </p>
               </div>
+
+              <div>
+                <h3 className="font-semibold text-zinc-100 mb-4">Platform</h3>
+                <div className="space-y-2">
+                  <a href="#features" className="block text-sm text-zinc-500 hover:text-green-400 transition">
+                    Features
+                  </a>
+                  <a href="#" className="block text-sm text-zinc-500 hover:text-green-400 transition">
+                    Challenges
+                  </a>
+                  <a href="#" className="block text-sm text-zinc-500 hover:text-green-400 transition">
+                    Leaderboard
+                  </a>
+                </div>
+              </div>
+
+              <div>
+                <h3 className="font-semibold text-zinc-100 mb-4">Resources</h3>
+                <div className="space-y-2">
+                  <a href="#" className="block text-sm text-zinc-500 hover:text-green-400 transition">
+                    Documentation
+                  </a>
+                  <a href="#" className="block text-sm text-zinc-500 hover:text-green-400 transition">
+                    Blog
+                  </a>
+                  <a href="#" className="block text-sm text-zinc-500 hover:text-green-400 transition">
+                    Support
+                  </a>
+                </div>
+              </div>
+
+              <div>
+                <h3 className="font-semibold text-zinc-100 mb-4">Connect</h3>
+                <div className="flex gap-3">
+                  <a href="#" className="p-2 bg-zinc-800 hover:bg-zinc-700 rounded-lg transition">
+                    <Github className="w-5 h-5 text-zinc-400" />
+                  </a>
+                  <a href="#" className="p-2 bg-zinc-800 hover:bg-zinc-700 rounded-lg transition">
+                    <Twitter className="w-5 h-5 text-zinc-400" />
+                  </a>
+                  <a href="#" className="p-2 bg-zinc-800 hover:bg-zinc-700 rounded-lg transition">
+                    <Linkedin className="w-5 h-5 text-zinc-400" />
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <div className="pt-8 border-t border-zinc-800 flex flex-col md:flex-row items-center justify-between gap-4">
               <p className="text-sm text-zinc-500">
-                The ultimate platform for cybersecurity professionals
+                © 2025 Hackers Connect. All rights reserved.
               </p>
-            </div>
-
-            <div>
-              <h3 className="font-semibold text-zinc-100 mb-4">Platform</h3>
-              <div className="space-y-2">
-                <a
-                  href="#features"
-                  className="block text-sm text-zinc-500 hover:text-zinc-300"
-                >
-                  Features
+              <div className="flex gap-6">
+                <a href="#" className="text-sm text-zinc-500 hover:text-green-400 transition">
+                  Privacy
                 </a>
-                <a
-                  href="#"
-                  className="block text-sm text-zinc-500 hover:text-zinc-300"
-                >
-                  Challenges
+                <a href="#" className="text-sm text-zinc-500 hover:text-green-400 transition">
+                  Terms
                 </a>
-                <a
-                  href="#"
-                  className="block text-sm text-zinc-500 hover:text-zinc-300"
-                >
-                  Leaderboard
+                <a href="#" className="text-sm text-zinc-500 hover:text-green-400 transition">
+                  Security
                 </a>
               </div>
-            </div>
-
-            <div>
-              <h3 className="font-semibold text-zinc-100 mb-4">Resources</h3>
-              <div className="space-y-2">
-                <a
-                  href="#"
-                  className="block text-sm text-zinc-500 hover:text-zinc-300"
-                >
-                  Documentation
-                </a>
-                <a
-                  href="#"
-                  className="block text-sm text-zinc-500 hover:text-zinc-300"
-                >
-                  Blog
-                </a>
-                <a
-                  href="#"
-                  className="block text-sm text-zinc-500 hover:text-zinc-300"
-                >
-                  Support
-                </a>
-              </div>
-            </div>
-
-            <div>
-              <h3 className="font-semibold text-zinc-100 mb-4">Connect</h3>
-              <div className="flex gap-3">
-                <a
-                  href="#"
-                  className="p-2 bg-zinc-800 hover:bg-zinc-700 rounded-lg transition"
-                >
-                  <Github className="w-5 h-5 text-zinc-400" />
-                </a>
-                <a
-                  href="#"
-                  className="p-2 bg-zinc-800 hover:bg-zinc-700 rounded-lg transition"
-                >
-                  <Twitter className="w-5 h-5 text-zinc-400" />
-                </a>
-                <a
-                  href="#"
-                  className="p-2 bg-zinc-800 hover:bg-zinc-700 rounded-lg transition"
-                >
-                  <Linkedin className="w-5 h-5 text-zinc-400" />
-                </a>
-              </div>
-            </div>
-          </div>
-
-          <div className="pt-8 border-t border-zinc-800 flex flex-col md:flex-row items-center justify-between gap-4">
-            <p className="text-sm text-zinc-500">
-              © 2025 Hackers Connect. All rights reserved.
-            </p>
-            <div className="flex gap-6">
-              <a href="#" className="text-sm text-zinc-500 hover:text-zinc-300">
-                Privacy
-              </a>
-              <a href="#" className="text-sm text-zinc-500 hover:text-zinc-300">
-                Terms
-              </a>
-              <a href="#" className="text-sm text-zinc-500 hover:text-zinc-300">
-                Security
-              </a>
             </div>
           </div>
         </div>

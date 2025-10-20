@@ -5,6 +5,9 @@ export default {
   content: ["./index.html", "./src/**/*.{ts,tsx}"],
   theme: {
     extend: {
+      screens: {
+        'xs': '475px',
+      },
       colors: {
         cyber: {
           bg: "#09090b",

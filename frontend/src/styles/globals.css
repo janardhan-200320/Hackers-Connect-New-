@@ -12,6 +12,68 @@
 
 :root {
   color-scheme: dark;
+  --neon-green: #22c55e;
+  --neon-green-light: #86efac;
+  --neon-green-lighter: #bbf7d0;
+  --neon-green-soft: #4ade80;
+}
+
+/* Responsive Utilities */
+@media (max-width: 374px) {
+  .text-xs { font-size: 0.6875rem; }
+  .text-sm { font-size: 0.8125rem; }
+  .p-4 { padding: 0.75rem; }
+  .gap-4 { gap: 0.75rem; }
+  .space-y-4 > * + * { margin-top: 0.75rem; }
+}
+
+@media (min-width: 475px) {
+  .xs\:inline { display: inline; }
+  .xs\:block { display: block; }
+  .xs\:flex { display: flex; }
+  .xs\:hidden { display: none; }
+  .xs\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .xs\:text-sm { font-size: 0.875rem; }
+  .xs\:text-base { font-size: 1rem; }
+  .xs\:px-3 { padding-left: 0.75rem; padding-right: 0.75rem; }
+  .xs\:py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+  .xs\:gap-2 { gap: 0.5rem; }
+  .xs\:gap-3 { gap: 0.75rem; }
+}
+
+/* Mobile-first responsive improvements */
+@media (max-width: 640px) {
+  .mobile-stack { 
+    flex-direction: column; 
+    align-items: stretch;
+  }
+  .mobile-full { 
+    width: 100%; 
+  }
+  .mobile-text-center { 
+    text-align: center; 
+  }
+  .mobile-hidden { 
+    display: none; 
+  }
+  .mobile-compact { 
+    padding: 0.5rem; 
+  }
+}
+
+/* Touch-friendly sizing for mobile */
+@media (hover: none) and (pointer: coarse) {
+  button {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 }
 
 /* Effects */
@@ -222,6 +284,153 @@
   animation: matrixFlicker 2s infinite;
 }
 
+/* Footer cursor reveal effect - bigger text, more glow */
+.footer-reveal-area {
+  --cursor-x: -200px;
+  --cursor-y: -200px;
+  padding: 0.5rem;
+}
+
+.footer-text-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.footer-text-reveal {
+  font-size: clamp(2.5rem, 10vw, 7rem);
+  font-weight: 900;
+  font-family: 'Arial Black', 'Impact', sans-serif;
+  text-align: center;
+  white-space: nowrap;
+  user-select: none;
+  letter-spacing: 0.15em;
+  color: transparent;
+  position: relative;
+  width: 100%;
+  
+  /* Completely invisible by default */
+  background: transparent;
+  background-clip: text;
+  -webkit-background-clip: text;
+  text-shadow: none;
+  
+  transition: all 0.1s ease;
+}
+
+/* Show brighter glow only when cursor is on footer */
+.footer-reveal-area:hover .footer-text-reveal {
+  background: radial-gradient(
+    circle 120px at var(--cursor-x) var(--cursor-y),
+    rgba(34, 197, 94, 0.8) 0%,
+    rgba(34, 197, 94, 0.5) 30%,
+    rgba(34, 197, 94, 0.2) 60%,
+    transparent 90%
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  
+  /* Brighter glow effect */
+  text-shadow: 
+    0 0 12px rgba(34, 197, 94, 0.8),
+    0 0 20px rgba(34, 197, 94, 0.6),
+    0 0 30px rgba(34, 197, 94, 0.4);
+}
+
+/* Spotlight/Torch light effect - similar to Resend's homepage */
+.spotlight-container {
+  position: relative;
+  overflow: hidden;
+  background: #000;
+  cursor: default;
+  min-height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  --cursor-x: -200px;
+  --cursor-y: -200px;
+}
+
+.spotlight-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(
+    circle 220px at var(--cursor-x) var(--cursor-y),
+    transparent 0%,
+    transparent 90px,
+    rgba(0, 0, 0, 0.5) 140px,
+    rgba(0, 0, 0, 0.8) 180px,
+    rgba(0, 0, 0, 0.95) 220px
+  );
+  pointer-events: none;
+  transition: all 0.15s ease-out;
+  z-index: 2;
+}
+
+.spotlight-text {
+  position: relative;
+  z-index: 1;
+  font-size: clamp(2.5rem, 9vw, 6rem);
+  font-weight: 900;
+  font-family: 'Arial Black', 'Impact', sans-serif;
+  text-align: center;
+  white-space: nowrap;
+  user-select: none;
+  letter-spacing: 0.1em;
+  
+  /* Completely invisible by default - no light */
+  color: rgba(20, 20, 20, 1);
+  text-shadow: none;
+  
+  /* Only show bright light where cursor is - larger glow area */
+  background: radial-gradient(
+    circle 220px at var(--cursor-x) var(--cursor-y),
+    #22c55e 0%,
+    #16a34a 50px,
+    #059669 90px,
+    rgba(34, 197, 94, 0.9) 140px,
+    rgba(34, 197, 94, 0.6) 180px,
+    rgba(34, 197, 94, 0.2) 210px,
+    transparent 220px
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  
+  transition: all 0.15s ease-out;
+  
+  /* Enhanced glow effect */
+  filter: drop-shadow(0 0 15px rgba(34, 197, 94, 0.8)) 
+          drop-shadow(0 0 30px rgba(34, 197, 94, 0.6))
+          drop-shadow(0 0 45px rgba(34, 197, 94, 0.4));
+}
+
+.spotlight-glow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(
+    circle 250px at var(--cursor-x) var(--cursor-y),
+    rgba(34, 197, 94, 0.15) 0%,
+    rgba(34, 197, 94, 0.08) 60px,
+    rgba(34, 197, 94, 0.04) 120px,
+    rgba(34, 197, 94, 0.02) 180px,
+    transparent 220px
+  );
+  pointer-events: none;
+  z-index: 0;
+  transition: all 0.15s ease-out;
+}
+
   .feature-card {
     background: rgba(10, 10, 10, 0.8);
     border: 1px solid rgba(34, 197, 94, 0.1);
@@ -307,6 +516,95 @@
                  0 0 20px #22c55e,
                  0 0 40px #22c55e;
   }
+}
+
+/* Lighter neon variants for Feed page */
+.neon-text-light {
+  color: #f8fafc;
+  transition: all 0.3s ease;
+}
+
+.neon-text-light:hover {
+  color: var(--neon-green-soft);
+  text-shadow: 0 0 5px var(--neon-green-soft),
+               0 0 10px var(--neon-green-soft),
+               0 0 15px var(--neon-green-soft);
+}
+
+.neon-border-light {
+  border: 1px solid rgba(74, 222, 128, 0.2);
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.neon-border-light:hover {
+  border-color: var(--neon-green-soft);
+  box-shadow: 0 0 8px rgba(74, 222, 128, 0.3),
+              0 0 15px rgba(74, 222, 128, 0.2);
+}
+
+.neon-button-light {
+  background: rgba(15, 15, 15, 0.8);
+  color: var(--neon-green-soft);
+  border: 1px solid rgba(74, 222, 128, 0.2);
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.neon-button-light:hover {
+  background: rgba(74, 222, 128, 0.1);
+  border-color: var(--neon-green-soft);
+  color: var(--neon-green-lighter);
+  box-shadow: 0 0 12px rgba(74, 222, 128, 0.4);
+}
+
+.feed-card {
+  background: rgba(15, 15, 15, 0.8);
+  border: 1px solid rgba(74, 222, 128, 0.1);
+  border-radius: 16px;
+  transition: all 0.3s ease;
+}
+
+.feed-card:hover {
+  border-color: rgba(74, 222, 128, 0.3);
+  box-shadow: 0 0 20px rgba(74, 222, 128, 0.2);
+}
+
+.feed-interaction {
+  color: #9ca3af;
+  transition: all 0.3s ease;
+}
+
+.feed-interaction:hover {
+  color: var(--neon-green-soft);
+  text-shadow: 0 0 8px rgba(74, 222, 128, 0.6);
+}
+
+.feed-interaction.active {
+  color: var(--neon-green-soft);
+  text-shadow: 0 0 8px rgba(74, 222, 128, 0.6);
+}
+
+/* Image display enhancements */
+.post-image {
+  transition: all 0.3s ease;
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.post-image:hover {
+  transform: scale(1.02);
+  box-shadow: 0 0 20px rgba(74, 222, 128, 0.3);
+}
+
+.image-loading {
+  background: linear-gradient(90deg, rgba(74, 222, 128, 0.1) 0%, rgba(74, 222, 128, 0.2) 50%, rgba(74, 222, 128, 0.1) 100%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
 }
 
 @keyframes matrixFlicker {

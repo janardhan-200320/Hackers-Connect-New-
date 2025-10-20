@@ -13,16 +13,18 @@ import * as Tabs from "@radix-ui/react-tabs";
 import * as Dialog from "@radix-ui/react-dialog";
 import { mockChallenges } from "@/lib/mockData";
 import { useChallenge } from "@/contexts/ChallengeContext";
+import { useScore } from "@/contexts/ScoreContext";
 
 export default function Challenges() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTab, setSelectedTab] = useState("all");
-  const [solvedChallenges] = useState<Set<string>>(new Set(["1"]));
+  const [solvedChallenges, setSolvedChallenges] = useState<Set<string>>(new Set(["1"]));
   const [selectedChallenge, setSelectedChallenge] = useState<
     (typeof mockChallenges)[0] | null
   >(null);
   const [flagInput, setFlagInput] = useState("");
   const { isStartChallengeOpen, setIsStartChallengeOpen } = useChallenge();
+  const { addChallengeCompletion, navigateToScoreboard } = useScore();
 
   // New Challenge Form State
   const [newChallenge, setNewChallenge] = useState({
@@ -62,10 +64,23 @@ export default function Challenges() {
   };
 
   const handleSubmitFlag = () => {
-    if (flagInput.trim()) {
-      alert("Flag submitted! (This is a mock submission)");
-      setFlagInput("");
-      setSelectedChallenge(null);
+    if (flagInput.trim() && selectedChallenge) {
+      // Simulate flag validation (in a real app, this would be validated on the server)
+      const isCorrect = flagInput.trim().toLowerCase() === "flag{demo_flag}";
+      
+      if (isCorrect) {
+        // Mark challenge as solved
+        setSolvedChallenges(prev => new Set([...prev, selectedChallenge.id]));
+        
+        // Add points to score
+        addChallengeCompletion(selectedChallenge.title, selectedChallenge.points);
+        
+        // Reset form
+        setFlagInput("");
+        setSelectedChallenge(null);
+      } else {
+        alert("❌ Incorrect flag! Try again.");
+      }
     }
   };
 
@@ -332,7 +347,11 @@ export default function Challenges() {
           return (
             <div
               key={challenge.id}
-              className="bg-zinc-900 border border-zinc-800 rounded-xl p-4 hover:border-zinc-700 transition"
+              className={`bg-zinc-900 border rounded-xl p-4 hover:border-zinc-700 transition ${
+                isSolved 
+                  ? "border-green-500/50 bg-green-900/10 neon-border-light" 
+                  : "border-zinc-800"
+              }`}
             >
               <div className="flex items-start justify-between mb-3">
                 <div className="flex-1">
@@ -374,12 +393,35 @@ export default function Challenges() {
                     </div>
                   </div>
 
-                  <button
-                    onClick={() => setSelectedChallenge(challenge)}
-                    className="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition text-sm"
-                  >
-                    {isSolved ? "View Solution" : "Start Challenge"}
-                  </button>
+                  {isSolved ? (
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2 text-green-400 text-sm font-medium">
+                        <Trophy className="w-4 h-4" />
+                        Challenge Completed! +{challenge.points} points
+                      </div>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => setSelectedChallenge(challenge)}
+                          className="flex-1 px-4 py-2 bg-zinc-700 hover:bg-zinc-600 text-white rounded-lg transition text-sm neon-button-light"
+                        >
+                          View Solution
+                        </button>
+                        <button
+                          onClick={navigateToScoreboard}
+                          className="flex-1 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition text-sm neon-button-light"
+                        >
+                          View Scoreboard
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={() => setSelectedChallenge(challenge)}
+                      className="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition text-sm neon-button-light"
+                    >
+                      Start Challenge
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
@@ -447,17 +489,25 @@ export default function Challenges() {
                     <label className="text-sm text-zinc-400 mb-2 block">
                       Submit Flag:
                     </label>
+                    <div className="mb-2 text-xs text-zinc-500">
+                      💡 For demo purposes, use: <code className="bg-zinc-800 px-1 rounded text-green-400">flag{"{demo_flag}"}</code>
+                    </div>
                     <div className="flex gap-2">
                       <input
                         type="text"
                         value={flagInput}
                         onChange={(e) => setFlagInput(e.target.value)}
                         placeholder="flag{...}"
-                        className="flex-1 bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-2 text-zinc-100 placeholder-zinc-500 outline-none focus:border-zinc-600"
+                        className="flex-1 bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-2 text-zinc-100 placeholder-zinc-500 outline-none focus:border-green-500 neon-border-light"
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") {
+                            handleSubmitFlag();
+                          }
+                        }}
                       />
                       <button
                         onClick={handleSubmitFlag}
-                        className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition"
+                        className="px-6 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition neon-button-light"
                       >
                         Submit
                       </button>

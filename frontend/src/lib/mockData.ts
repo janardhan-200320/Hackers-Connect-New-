@@ -69,7 +69,9 @@ export const mockPosts = [
     comments: 45,
     shares: 12,
     tags: ["XSS", "WebSecurity", "Writeup"],
-    images: [],
+    images: [
+      "https://images.unsplash.com/photo-1563206767-5b18f218e8de?w=800&h=400&fit=crop",
+    ],
   },
   {
     id: "2",
@@ -85,7 +87,9 @@ export const mockPosts = [
     key = derive_key_from_hash(encrypted_data[:32])
     cipher = AES.new(key, AES.MODE_CBC, iv=encrypted_data[32:48])
     return unpad(cipher.decrypt(encrypted_data[48:]), AES.block_size)`,
-    images: [],
+    images: [
+      "https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=800&h=400&fit=crop",
+    ],
   },
   {
     id: "3",
@@ -111,7 +115,9 @@ export const mockPosts = [
     comments: 28,
     shares: 5,
     tags: ["HackTheBox", "Pentest", "Linux"],
-    images: [],
+    images: [
+      "https://images.unsplash.com/photo-1629654297299-c8506221ca97?w=800&h=400&fit=crop",
+    ],
   },
   {
     id: "5",
@@ -123,48 +129,199 @@ export const mockPosts = [
     comments: 89,
     shares: 34,
     tags: ["Tool", "OpenSource", "Recon"],
-    images: [],
+    images: [
+      "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1587440871875-191322ee64b0?w=800&h=400&fit=crop",
+    ],
   },
 ];
 
-export const mockGroups = [
+export interface GroupMessage {
+  id: string;
+  senderId: string;
+  senderUsername: string;
+  content: string;
+  timestamp: string;
+  type: 'text' | 'image' | 'video' | 'file';
+  mediaUrl?: string;
+  fileName?: string;
+}
+
+export interface GroupPost {
+  id: string;
+  authorId: string;
+  authorUsername: string;
+  content: string;
+  timestamp: string;
+  likes: number;
+  comments: number;
+  type: 'text' | 'image' | 'video';
+  mediaUrl?: string;
+}
+
+export interface Group {
+  id: string;
+  name: string;
+  description: string;
+  memberCount: number;
+  avatar: string;
+  isPrivate: boolean;
+  posts: number;
+  members: string[]; // array of usernames
+  admins: string[]; // array of usernames
+  createdBy: string;
+  createdAt: string;
+  messages: GroupMessage[];
+  groupPosts: GroupPost[];
+  lastActivity: string;
+}
+
+export const mockGroups: Group[] = [
   {
     id: "1",
     name: "Web Security Masters",
-    description:
-      "Advanced web application security research and CTF discussions",
-    members: 3421,
+    description: "Advanced web application security research and CTF discussions",
+    memberCount: 3421,
     avatar: "https://api.dicebear.com/7.x/shapes/svg?seed=web",
     isPrivate: false,
     posts: 1234,
+    members: ["0xRaven", "ByteBandit", "CryptoCat", "RootNova", "PhantomDev", "DataGhost", "NullByte", "HexHunter"],
+    admins: ["0xRaven", "ByteBandit"],
+    createdBy: "0xRaven",
+    createdAt: "2024-01-15T10:30:00Z",
+    lastActivity: "2025-10-10T14:22:00Z",
+    messages: [
+      {
+        id: "msg1",
+        senderId: "1",
+        senderUsername: "0xRaven",
+        content: "Welcome to Web Security Masters! Share your latest findings here.",
+        timestamp: "2025-10-10T09:15:00Z",
+        type: "text"
+      },
+      {
+        id: "msg2",
+        senderId: "2",
+        senderUsername: "ByteBandit",
+        content: "Found an interesting XSS bypass technique today",
+        timestamp: "2025-10-10T10:30:00Z",
+        type: "text"
+      },
+      {
+        id: "msg3",
+        senderId: "3",
+        senderUsername: "CryptoCat",
+        content: "Check out this vulnerability assessment report",
+        timestamp: "2025-10-10T11:45:00Z",
+        type: "file",
+        fileName: "security_report.pdf"
+      },
+      {
+        id: "msg4",
+        senderId: "4",
+        senderUsername: "RootNova",
+        content: "Demo of the new exploit",
+        timestamp: "2025-10-10T14:22:00Z",
+        type: "video",
+        mediaUrl: "https://example.com/demo.mp4"
+      }
+    ],
+    groupPosts: [
+      {
+        id: "post1",
+        authorId: "1",
+        authorUsername: "0xRaven",
+        content: "New SQL injection technique discovered in modern web frameworks",
+        timestamp: "2025-10-09T15:30:00Z",
+        likes: 45,
+        comments: 12,
+        type: "text"
+      }
+    ]
   },
   {
     id: "2",
     name: "Binary Exploitation Club",
-    description:
-      "Reverse engineering, binary exploitation, and low-level programming",
-    members: 2156,
+    description: "Reverse engineering, binary exploitation, and low-level programming",
+    memberCount: 2156,
     avatar: "https://api.dicebear.com/7.x/shapes/svg?seed=binary",
     isPrivate: false,
     posts: 892,
+    members: ["ByteBandit", "RootNova", "HexHunter", "DataGhost", "NullByte"],
+    admins: ["ByteBandit"],
+    createdBy: "ByteBandit",
+    createdAt: "2024-02-20T14:15:00Z",
+    lastActivity: "2025-10-10T13:15:00Z",
+    messages: [
+      {
+        id: "msg1",
+        senderId: "2",
+        senderUsername: "ByteBandit",
+        content: "Working on a new buffer overflow exploit",
+        timestamp: "2025-10-10T08:30:00Z",
+        type: "text"
+      },
+      {
+        id: "msg2",
+        senderId: "4",
+        senderUsername: "RootNova",
+        content: "Here's the assembly code analysis",
+        timestamp: "2025-10-10T13:15:00Z",
+        type: "image",
+        mediaUrl: "https://example.com/assembly_analysis.png"
+      }
+    ],
+    groupPosts: []
   },
   {
     id: "3",
     name: "Crypto Warriors",
     description: "Cryptography challenges and cipher breaking",
-    members: 1834,
+    memberCount: 1834,
     avatar: "https://api.dicebear.com/7.x/shapes/svg?seed=crypto",
     isPrivate: false,
     posts: 567,
+    members: ["CryptoCat", "DataGhost", "0xRaven", "PhantomDev"],
+    admins: ["CryptoCat"],
+    createdBy: "CryptoCat",
+    createdAt: "2024-03-10T09:45:00Z",
+    lastActivity: "2025-10-10T12:00:00Z",
+    messages: [
+      {
+        id: "msg1",
+        senderId: "3",
+        senderUsername: "CryptoCat",
+        content: "New cryptographic challenge is live!",
+        timestamp: "2025-10-10T12:00:00Z",
+        type: "text"
+      }
+    ],
+    groupPosts: []
   },
   {
     id: "4",
     name: "Elite CTF Team",
     description: "Invite-only group for competitive CTF players",
-    members: 89,
+    memberCount: 89,
     avatar: "https://api.dicebear.com/7.x/shapes/svg?seed=elite",
     isPrivate: true,
     posts: 234,
+    members: ["0xRaven", "CryptoCat", "ByteBandit"],
+    admins: ["0xRaven"],
+    createdBy: "0xRaven",
+    createdAt: "2024-01-01T00:00:00Z",
+    lastActivity: "2025-10-10T16:30:00Z",
+    messages: [
+      {
+        id: "msg1",
+        senderId: "1",
+        senderUsername: "0xRaven",
+        content: "Team strategy for upcoming CTF competition",
+        timestamp: "2025-10-10T16:30:00Z",
+        type: "text"
+      }
+    ],
+    groupPosts: []
   },
 ];
 
@@ -257,6 +414,73 @@ export const mockChallenges = [
     points: 500,
     solves: 123,
     flag: "FLAG{K3RN3L_R00T_4CC3SS}",
+  },
+];
+
+export const mockComments = [
+  {
+    id: "1",
+    postId: "1",
+    author: mockUsers[1],
+    content: "Great find! 🔥 Would love to see the full writeup. What CMS was it?",
+    timestamp: new Date(Date.now() - 1800000).toISOString(),
+    likes: 12,
+  },
+  {
+    id: "2",
+    postId: "1",
+    author: mockUsers[2],
+    content: "This is exactly why input validation is so critical. Nice work!",
+    timestamp: new Date(Date.now() - 1200000).toISOString(),
+    likes: 8,
+  },
+  {
+    id: "3",
+    postId: "1",
+    author: mockUsers[3],
+    content: "Have you reported this to the vendor yet? What was their response?",
+    timestamp: new Date(Date.now() - 900000).toISOString(),
+    likes: 5,
+  },
+  {
+    id: "4",
+    postId: "2",
+    author: mockUsers[0],
+    content: "The obfuscation in that decrypt function is nasty! How did you identify the key derivation method?",
+    timestamp: new Date(Date.now() - 3000000).toISOString(),
+    likes: 15,
+  },
+  {
+    id: "5",
+    postId: "2",
+    author: mockUsers[4],
+    content: "Reverse engineering malware is always fascinating. Thanks for sharing the code snippet!",
+    timestamp: new Date(Date.now() - 2400000).toISOString(),
+    likes: 7,
+  },
+  {
+    id: "6",
+    postId: "3",
+    author: mockUsers[1],
+    content: "RSA with low exponents is such a classic attack vector. Great educational content! 📚",
+    timestamp: new Date(Date.now() - 4200000).toISOString(),
+    likes: 22,
+  },
+  {
+    id: "7",
+    postId: "3",
+    author: mockUsers[4],
+    content: "This is why I always recommend using proper key generation practices. Bookmarked for reference!",
+    timestamp: new Date(Date.now() - 3900000).toISOString(),
+    likes: 9,
+  },
+  {
+    id: "8",
+    postId: "4",
+    author: mockUsers[2],
+    content: "OSINT investigations are so rewarding when you finally piece everything together! 🕵️",
+    timestamp: new Date(Date.now() - 6000000).toISOString(),
+    likes: 18,
   },
 ];
 

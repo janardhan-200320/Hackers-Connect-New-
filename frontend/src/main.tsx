@@ -1,6 +1,10 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import {
+  createBrowserRouter,
+  RouterProvider,
+  Navigate,
+} from "react-router-dom";
 import "./styles/globals.css";
 import App from "./App";
 import Landing from "./routes/Landing";
@@ -11,7 +15,15 @@ import Events from "./routes/Events";
 import Messages from "./routes/Messages";
 import Marketplace from "./routes/Marketplace";
 import Challenges from "./routes/Challenges";
+import Scoreboard from "./routes/Scoreboard";
 import LoginGate from "./routes/LoginGate";
+import { getAuthToken } from "./utils/auth";
+
+// This component protects routes. If not logged in, it redirects to the login page.
+const PrivateRoute = ({ children }: { children: JSX.Element }) => {
+  const isAuthenticated = !!getAuthToken();
+  return isAuthenticated ? children : <Navigate to="/auth" replace />;
+};
 
 const router = createBrowserRouter([
   {
@@ -24,7 +36,12 @@ const router = createBrowserRouter([
   },
   {
     path: "/app",
-    element: <App />,
+    // Protect the entire /app route and its children
+    element: (
+      <PrivateRoute>
+        <App />
+      </PrivateRoute>
+    ),
     children: [
       { index: true, element: <Feed /> },
       { path: "profile/:id", element: <Profile /> },
@@ -33,6 +50,7 @@ const router = createBrowserRouter([
       { path: "messages", element: <Messages /> },
       { path: "market", element: <Marketplace /> },
       { path: "ctf", element: <Challenges /> },
+      { path: "scoreboard", element: <Scoreboard /> },
     ],
   },
 ]);
